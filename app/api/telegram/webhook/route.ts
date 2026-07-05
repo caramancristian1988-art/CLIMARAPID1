@@ -81,6 +81,9 @@ export async function POST(request: NextRequest) {
 
     const statusLabel = MESSAGE_STATUSES.find((s) => s.value === updated.status)?.label ?? updated.status;
     const moodLabel = MOODS.find((m) => m.value === updated.mood)?.label ?? null;
+    const products = updated.productIds?.length
+      ? await prisma.product.findMany({ where: { id: { in: updated.productIds } }, select: { name: true, slug: true } })
+      : [];
     const text = buildContactMessageText({
       name: updated.name,
       phone: updated.phone,
@@ -89,6 +92,7 @@ export async function POST(request: NextRequest) {
       source: updated.source,
       statusLabel,
       moodLabel,
+      products,
     });
 
     if (updated.telegramMessageId) {
