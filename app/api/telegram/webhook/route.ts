@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
       await editTelegramMessage(updated.telegramMessageId, text, buttons);
     }
-    const confirmText = isMood ? `Reactie: ${moodLabel}` : `Status: ${statusLabel}`;
+    const confirmText = isMood ? `Reactie: ${moodLabel}` : `Status: ${statusLabel} [${products.length}p, ${updated.productIds?.length ?? 0}id]`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
   } catch (err) {
