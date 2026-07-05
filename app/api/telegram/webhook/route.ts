@@ -125,9 +125,10 @@ export async function POST(request: NextRequest) {
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
       editError = await editTelegramMessage(existing.telegramMessageId, text, buttons);
     }
+    const dbg = `ids:${productIds.length} p:${products.length} names:${products.map(p=>p.name.slice(0,8)).join("|")}`;
     const confirmText = editError
-      ? `Eroare edit: ${editError.slice(0, 150)}`
-      : isMood ? `Reacție salvată.` : `Status: ${statusLabel}`;
+      ? `Eroare edit: ${editError.slice(0, 100)}`
+      : `${isMood ? "Reacție" : statusLabel} | ${dbg}`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
   } catch (err) {
