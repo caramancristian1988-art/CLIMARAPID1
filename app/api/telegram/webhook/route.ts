@@ -92,15 +92,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (updated.telegramMessageId) {
-      // A confirmed Achitat/Anulat is final — clear all buttons instead of restoring the full set.
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
       await editTelegramMessage(updated.telegramMessageId, text, buttons);
     }
-    const confirmText = isMood ? `Reacție: ${moodLabel}` : `Status: ${statusLabel}`;
+    const confirmText = isMood ? `Reactie: ${moodLabel}` : `Status: ${statusLabel}`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
-  } catch {
-    await answerCallbackQuery(callbackQuery.id, "Mesajul nu mai există.");
+  } catch (err) {
+    console.error("[telegram-webhook] error:", err);
+    const msg = err instanceof Error ? err.message.slice(0, 180) : "Eroare necunoscuta";
+    await answerCallbackQuery(callbackQuery.id, msg);
   }
 
   return NextResponse.json({ ok: true });
