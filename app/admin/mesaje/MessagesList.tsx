@@ -5,7 +5,6 @@ import Link from "next/link";
 import MessageStatusBadge from "../components/MessageStatusBadge";
 import MoodBadge from "../components/MoodBadge";
 import LinkedProductText from "../components/LinkedProductText";
-import CopyableId from "../components/CopyableId";
 import { markMessageReadAction, deleteMessageAction } from "@/lib/adminMessageActions";
 
 interface Message {
@@ -195,8 +194,6 @@ export default function MessagesList({ messages: initialMessages }: { messages: 
                               <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
                           </Link>
-                          <span className="opacity-30">|</span>
-                          <CopyableId id={p.id} className="inline-flex items-center gap-1 font-mono opacity-70 normal-case hover:opacity-100 transition-opacity" />
                         </div>
                       ))}
                     </div>
