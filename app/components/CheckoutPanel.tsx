@@ -50,6 +50,7 @@ export default function CheckoutPanel() {
     submitData.set("message", message);
     submitData.set("source", "Comandă din coș");
     submitData.set("productSlugs", items.map((i) => i.slug).join(","));
+    submitData.set("productItems", JSON.stringify(items.map((i) => ({ slug: i.slug, name: i.name }))));
 
     setStatus("pending");
     const result = await submitContactMessageAction({}, submitData);

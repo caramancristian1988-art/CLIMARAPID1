@@ -65,8 +65,18 @@ export async function submitContactMessageAction(
   const message = [subject && `Subiect: ${subject}`, messageText].filter(Boolean).join("\n\n") || null;
   const source = sourcePath === "/contact" ? "Pagina de contact" : sourcePath || "Pagina de contact";
 
-  const products = await resolveProducts(formData);
-  const productIds = products.map((p) => p.id);
+  // productItems carries slug+name directly from the cart (no DB lookup needed).
+  // resolveProducts still runs to get DB ids for productIds field.
+  let cartItems: { slug: string; name: string }[] = [];
+  try {
+    const raw = String(formData.get("productItems") ?? "");
+    if (raw) cartItems = JSON.parse(raw);
+  } catch { /* use empty */ }
+
+  const resolvedProducts = await resolveProducts(formData);
+  const productIds = resolvedProducts.map((p) => p.id);
+  // Use cart items for link building; fall back to DB-resolved if cart data missing.
+  const products = cartItems.length > 0 ? cartItems : resolvedProducts;
 
   let created;
   try {
