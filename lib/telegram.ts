@@ -124,10 +124,17 @@ export function buildContactMessageText(message: {
   const escapedSource = escapeHtml(message.source);
   const siteUrl = getSiteUrl();
 
-  // Explicit product links — always present regardless of text matching
-  const productLinkLines = products.map(
-    (p) => `🔗 <a href="${siteUrl}/produse/${p.slug}">${escapeHtml(p.name)}</a>`
-  );
+  // Build message body: try to linkify product names inline first
+  let messageBody = escapedMessage ?? null;
+  if (messageBody && products.length > 0) {
+    for (const p of products) {
+      const escapedName = escapeHtml(p.name);
+      const url = `${siteUrl}/produse/${p.slug}`;
+      if (messageBody.includes(escapedName)) {
+        messageBody = messageBody.split(escapedName).join(`<a href="${url}">${escapedName}</a>`);
+      }
+    }
+  }
 
   const lines = [
     `📩 <b>Mesaj nou</b>`,
@@ -135,8 +142,7 @@ export function buildContactMessageText(message: {
     `👤 ${escapeHtml(message.name)}`,
     `📞 ${escapeHtml(message.phone)}`,
     message.email ? `✉️ ${escapeHtml(message.email)}` : null,
-    escapedMessage ? `\n${escapedMessage}` : null,
-    productLinkLines.length > 0 ? `\n${productLinkLines.join("\n")}` : null,
+    messageBody ? `\n${messageBody}` : null,
     ``,
     `🔗 Sursă: ${escapedSource}`,
     `📌 Status: <b>${escapeHtml(message.statusLabel)}</b>`,

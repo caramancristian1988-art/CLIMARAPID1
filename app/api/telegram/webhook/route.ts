@@ -108,7 +108,8 @@ export async function POST(request: NextRequest) {
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
       await editTelegramMessage(existing.telegramMessageId, text, buttons);
     }
-    const confirmText = isMood ? `Reactie: ${moodLabel}` : `Status: ${statusLabel}`;
+    const matched = products.filter(p => (updated.message ?? "").includes(p.name));
+    const confirmText = isMood ? `Reactie: ${moodLabel}` : `Status: ${statusLabel} | prod:${products.length} match:${matched.length}`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
   } catch (err) {
