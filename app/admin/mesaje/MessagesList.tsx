@@ -5,6 +5,7 @@ import Link from "next/link";
 import MessageStatusBadge from "../components/MessageStatusBadge";
 import MoodBadge from "../components/MoodBadge";
 import LinkedProductText from "../components/LinkedProductText";
+import CopyableId from "../components/CopyableId";
 import { markMessageReadAction, deleteMessageAction } from "@/lib/adminMessageActions";
 
 interface Message {
@@ -178,22 +179,22 @@ export default function MessagesList({ messages: initialMessages }: { messages: 
                   {m.products.length > 0 && (
                     <div className="flex flex-col gap-1.5 mt-2">
                       {m.products.map((p) => (
-                        <div
-                          key={p.id}
-                          className="inline-flex items-center gap-2 text-[10px] font-bold text-[#c7092b] bg-[#fdf2f3] px-2 py-1 rounded-full w-fit"
-                        >
-                          <Link
-                            href={`/produse/${p.slug}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 hover:underline transition-colors"
-                          >
-                            <span className="uppercase">Vezi produsul</span>
-                            <span className="opacity-70 truncate max-w-[160px]">{p.name}</span>
-                            <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </Link>
+                        <div key={p.id} className="flex flex-col gap-0.5">
+                          <div className="inline-flex items-center gap-2 text-[10px] font-bold text-[#c7092b] bg-[#fdf2f3] px-2 py-1 rounded-full w-fit max-w-full">
+                            <Link
+                              href={`/produse/${p.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 hover:underline transition-colors min-w-0"
+                            >
+                              <span className="uppercase shrink-0">Vezi produsul</span>
+                              <span className="opacity-70 truncate max-w-[140px]">{p.name}</span>
+                              <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </Link>
+                          </div>
+                          <CopyableId id={p.id} />
                         </div>
                       ))}
                     </div>
