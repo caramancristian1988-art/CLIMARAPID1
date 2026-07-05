@@ -91,7 +91,7 @@ function escapeHtml(value: string): string {
 
 function getSiteUrl(): string {
   if (process.env.SITE_URL) return process.env.SITE_URL;
-  if (process.env.NODE_ENV === "production") return "https://climatrapid.md";
+  if (process.env.NODE_ENV === "production") return "https://www.climatrapid.md";
   return "http://localhost:3000";
 }
 
