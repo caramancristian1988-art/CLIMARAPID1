@@ -95,19 +95,6 @@ function getSiteUrl(): string {
   return "http://localhost:3000";
 }
 
-// Wraps any mentioned product names in an HTML link to that product's page,
-// so tapping the (already-visible) product name in Telegram jumps straight
-// to it — no extra/visible URL text cluttering the message.
-function linkifyProducts(text: string, products: { name: string; slug: string }[]): string {
-  let result = text;
-  for (const p of products) {
-    const escapedName = escapeHtml(p.name);
-    if (!escapedName || !result.includes(escapedName)) continue;
-    const url = `${getSiteUrl()}/produse/${p.slug}`;
-    result = result.split(escapedName).join(`<a href="${url}">${escapedName}</a>`);
-  }
-  return result;
-}
 
 export function buildContactMessageText(message: {
   name: string;
@@ -124,17 +111,11 @@ export function buildContactMessageText(message: {
   const escapedSource = escapeHtml(message.source);
   const siteUrl = getSiteUrl();
 
-  // Build message body: try to linkify product names inline first
-  let messageBody = escapedMessage ?? null;
-  if (messageBody && products.length > 0) {
-    for (const p of products) {
-      const escapedName = escapeHtml(p.name);
-      const url = `${siteUrl}/produse/${p.slug}`;
-      if (messageBody.includes(escapedName)) {
-        messageBody = messageBody.split(escapedName).join(`<a href="${url}">${escapedName}</a>`);
-      }
-    }
-  }
+  // Explicit product links built directly from the products array —
+  // never depends on text matching, always present when products exist.
+  const productLinks = products.length > 0
+    ? products.map((p) => `<a href="${siteUrl}/produse/${encodeURI(p.slug)}">${escapeHtml(p.name)}</a>`).join("  |  ")
+    : null;
 
   const lines = [
     `📩 <b>Mesaj nou</b>`,
@@ -142,7 +123,8 @@ export function buildContactMessageText(message: {
     `👤 ${escapeHtml(message.name)}`,
     `📞 ${escapeHtml(message.phone)}`,
     message.email ? `✉️ ${escapeHtml(message.email)}` : null,
-    messageBody ? `\n${messageBody}` : null,
+    escapedMessage ? `\n${escapedMessage}` : null,
+    productLinks ? `🛒 ${productLinks}` : null,
     ``,
     `🔗 Sursă: ${escapedSource}`,
     `📌 Status: <b>${escapeHtml(message.statusLabel)}</b>`,
