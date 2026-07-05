@@ -89,9 +89,25 @@ export async function POST(request: NextRequest) {
     const moodLabel = MOODS.find((m) => m.value === updated.mood)?.label ?? null;
 
     const productIds = existing.productIds ?? [];
-    const products = productIds.length
+    let products = productIds.length
       ? await prisma.product.findMany({ where: { id: { in: productIds } }, select: { name: true, slug: true } })
       : [];
+
+    // Fallback for older messages where productIds weren't saved: parse product
+    // names from the stored message text ("1x Name — Price MDL/buc" lines).
+    if (products.length === 0 && existing.message) {
+      const names = existing.message
+        .split("\n")
+        .filter((l) => /^\d+x /.test(l))
+        .map((l) => l.replace(/^\d+x /, "").replace(/ — .*$/, "").trim())
+        .filter(Boolean);
+      if (names.length > 0) {
+        products = await prisma.product.findMany({
+          where: { name: { in: names } },
+          select: { name: true, slug: true },
+        });
+      }
+    }
 
     const text = buildContactMessageText({
       name: updated.name,
