@@ -132,9 +132,10 @@ export async function POST(request: NextRequest) {
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
       editError = await editTelegramMessage(existing.telegramMessageId, text, buttons);
     }
+    const dbgPath = existing.telegramHtml ? `html:${existing.telegramHtml.length}` : `nohtmlfb`;
     const confirmText = editError
-      ? `Eroare edit: ${editError.slice(0, 150)}`
-      : isMood ? `Reacție salvată.` : `Status: ${statusLabel}`;
+      ? `Err: ${editError.slice(0, 120)}`
+      : `${isMood ? "reactie" : statusLabel} [${dbgPath}]`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
   } catch (err) {
