@@ -54,7 +54,7 @@ export async function GET() {
   try {
     lastMessage = await prisma.contactMessage.findFirst({
       orderBy: { createdAt: "desc" },
-      select: { id: true, status: true, telegramMessageId: true },
+      select: { id: true, status: true, telegramMessageId: true, productIds: true, source: true },
     });
   } catch (e) {
     dbStatus = String(e);

@@ -74,16 +74,25 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const updated =
-      isStatus || isConfirm
-        ? await prisma.contactMessage.update({ where: { id }, data: { status: value, read: true } })
-        : await prisma.contactMessage.update({ where: { id }, data: { mood: value } });
+    // Fetch BEFORE update to guarantee we have productIds and telegramMessageId
+    const existing = await prisma.contactMessage.findUnique({ where: { id } });
+    if (!existing) {
+      await answerCallbackQuery(callbackQuery.id, "Mesajul nu mai exista.");
+      return NextResponse.json({ ok: true });
+    }
+
+    const updated = isStatus || isConfirm
+      ? await prisma.contactMessage.update({ where: { id }, data: { status: value, read: true } })
+      : await prisma.contactMessage.update({ where: { id }, data: { mood: value } });
 
     const statusLabel = MESSAGE_STATUSES.find((s) => s.value === updated.status)?.label ?? updated.status;
     const moodLabel = MOODS.find((m) => m.value === updated.mood)?.label ?? null;
-    const products = updated.productIds?.length
-      ? await prisma.product.findMany({ where: { id: { in: updated.productIds } }, select: { name: true, slug: true } })
+
+    const productIds = existing.productIds ?? [];
+    const products = productIds.length
+      ? await prisma.product.findMany({ where: { id: { in: productIds } }, select: { name: true, slug: true } })
       : [];
+
     const text = buildContactMessageText({
       name: updated.name,
       phone: updated.phone,
@@ -95,11 +104,11 @@ export async function POST(request: NextRequest) {
       products,
     });
 
-    if (updated.telegramMessageId) {
+    if (existing.telegramMessageId) {
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
-      await editTelegramMessage(updated.telegramMessageId, text, buttons);
+      await editTelegramMessage(existing.telegramMessageId, text, buttons);
     }
-    const confirmText = isMood ? `Reactie: ${moodLabel}` : `Status: ${statusLabel} [${products.length}p, ${updated.productIds?.length ?? 0}id]`;
+    const confirmText = isMood ? `Reactie: ${moodLabel}` : `Status: ${statusLabel}`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
   } catch (err) {
