@@ -4,16 +4,22 @@ import { prisma } from "@/lib/prisma";
 
 const TG = "https://api.telegram.org";
 
-export async function POST() {
+export async function POST(request: Request) {
   try { await requireAdmin(); } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
-  const siteUrl = process.env.SITE_URL ?? "https://climatrapid.md";
 
   if (!token) return NextResponse.json({ error: "TELEGRAM_BOT_TOKEN not set" }, { status: 500 });
+
+  // Allow overriding the base URL via request body: { "siteUrl": "https://www.climatrapid.md" }
+  let siteUrl = process.env.SITE_URL ?? "https://climatrapid.md";
+  try {
+    const body = await request.json().catch(() => ({}));
+    if (body?.siteUrl) siteUrl = String(body.siteUrl).replace(/\/$/, "");
+  } catch { /* use default */ }
 
   const webhookUrl = `${siteUrl}/api/telegram/webhook`;
   const body: Record<string, string> = { url: webhookUrl };
