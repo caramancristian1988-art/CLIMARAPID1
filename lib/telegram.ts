@@ -181,8 +181,14 @@ export function buildStatusButtons(messageId: string): InlineButton[][] {
   return rowsToButtons(STATUS_BUTTON_ROWS, "status", messageId);
 }
 
-export function buildMessageButtons(messageId: string): InlineButton[][] {
-  return [...rowsToButtons(STATUS_BUTTON_ROWS, "status", messageId), ...rowsToButtons(MOOD_BUTTON_ROWS, "mood", messageId)];
+export function buildMessageButtons(messageId: string, currentStatusLabel?: string): InlineButton[][] {
+  const statusRows = rowsToButtons(STATUS_BUTTON_ROWS, "status", messageId);
+  const moodRows = rowsToButtons(MOOD_BUTTON_ROWS, "mood", messageId);
+  if (currentStatusLabel) {
+    const indicator: InlineButton[][] = [[{ text: `📌 ${currentStatusLabel}`, callback_data: `noop:${messageId}` }]];
+    return [...indicator, ...statusRows, ...moodRows];
+  }
+  return [...statusRows, ...moodRows];
 }
 
 export const STATUSES_REQUIRING_CONFIRMATION = ["achitat", "anulat"];

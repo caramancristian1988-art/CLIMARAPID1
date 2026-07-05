@@ -7,9 +7,8 @@ import { MESSAGE_STATUSES } from "./messageStatuses";
 import { MOODS } from "./moods";
 import {
   sendTelegramMessage,
-  editTelegramMessage,
+  editTelegramReplyMarkup,
   buildContactMessageText,
-  updateStatusMoodInHtml,
   buildMessageButtons,
   STATUSES_REQUIRING_CONFIRMATION,
 } from "./telegram";
@@ -122,25 +121,11 @@ async function syncTelegramMessage(updated: {
   const statusLabel = MESSAGE_STATUSES.find((s) => s.value === updated.status)?.label ?? updated.status;
   const moodLabel = MOODS.find((m) => m.value === updated.mood)?.label ?? null;
 
-  let text: string;
-  if (updated.telegramHtml) {
-    text = updateStatusMoodInHtml(updated.telegramHtml, statusLabel, moodLabel);
-  } else {
-    const products = await getProductsByIds(updated.productIds);
-    text = buildContactMessageText({
-      name: updated.name,
-      phone: updated.phone,
-      email: updated.email,
-      message: updated.message,
-      source: updated.source,
-      statusLabel,
-      moodLabel,
-      products,
-    });
-  }
-  await prisma.contactMessage.update({ where: { id: updated.id }, data: { telegramHtml: text } });
-  const buttons = STATUSES_REQUIRING_CONFIRMATION.includes(updated.status) ? [] : buildMessageButtons(updated.id);
-  await editTelegramMessage(updated.telegramMessageId, text, buttons);
+  const statusDisplay = moodLabel ? `${statusLabel} ${moodLabel}` : statusLabel;
+  const buttons = STATUSES_REQUIRING_CONFIRMATION.includes(updated.status)
+    ? []
+    : buildMessageButtons(updated.id, statusDisplay);
+  await editTelegramReplyMarkup(updated.telegramMessageId, buttons);
 }
 
 export async function setMessageStatusAction(formData: FormData) {
