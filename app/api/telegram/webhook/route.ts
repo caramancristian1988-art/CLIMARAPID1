@@ -14,9 +14,12 @@ import {
 } from "@/lib/telegram";
 
 export async function POST(request: NextRequest) {
-  const secret = request.headers.get("x-telegram-bot-api-secret-token");
-  if (secret !== process.env.TELEGRAM_WEBHOOK_SECRET) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  if (expectedSecret) {
+    const secret = request.headers.get("x-telegram-bot-api-secret-token");
+    if (secret !== expectedSecret) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
   }
 
   const update = await request.json().catch(() => null);
