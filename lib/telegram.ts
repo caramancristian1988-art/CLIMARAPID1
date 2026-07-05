@@ -140,6 +140,26 @@ export function buildContactMessageText(message: {
   return lines.join("\n");
 }
 
+// Updates only the status and mood lines in a previously-built Telegram HTML
+// string, preserving all product links and other content unchanged.
+export function updateStatusMoodInHtml(html: string, statusLabel: string, moodLabel: string | null): string {
+  let updated = html.replace(
+    /📌 Status: <b>[^<]*<\/b>/,
+    `📌 Status: <b>${escapeHtml(statusLabel)}</b>`
+  );
+  const moodLine = moodLabel ? `🙂 Reacție: <b>${escapeHtml(moodLabel)}</b>` : null;
+  if (moodLine) {
+    if (/🙂 Reacție:/.test(updated)) {
+      updated = updated.replace(/🙂 Reacție: <b>[^<]*<\/b>/, moodLine);
+    } else {
+      updated += "\n" + moodLine;
+    }
+  } else {
+    updated = updated.replace(/\n🙂 Reacție: <b>[^<]*<\/b>/, "");
+  }
+  return updated;
+}
+
 const STATUS_BUTTON_ROWS: { value: string; label: string }[][] = [
   [{ value: "sunat", label: "📞 Sunat" }, { value: "nu_raspunde", label: "🚫 Nu răspunde" }, { value: "se_gandeste", label: "🤔 Se gândește" }],
   [{ value: "programat", label: "🗓 Programat" }, { value: "in_lucru", label: "🛠 În lucru" }, { value: "achitat", label: "💰 Achitat" }],

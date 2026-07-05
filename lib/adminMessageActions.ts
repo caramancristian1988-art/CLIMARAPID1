@@ -9,6 +9,7 @@ import {
   sendTelegramMessage,
   editTelegramMessage,
   buildContactMessageText,
+  updateStatusMoodInHtml,
   buildMessageButtons,
   STATUSES_REQUIRING_CONFIRMATION,
 } from "./telegram";
@@ -78,7 +79,7 @@ export async function submitContactMessageAction(
   const text = buildContactMessageText({ name, phone, email: email || null, message, source, statusLabel, products });
   const telegramMessageId = await sendTelegramMessage(text, buildMessageButtons(created.id));
   if (telegramMessageId) {
-    await prisma.contactMessage.update({ where: { id: created.id }, data: { telegramMessageId } });
+    await prisma.contactMessage.update({ where: { id: created.id }, data: { telegramMessageId, telegramHtml: text } });
   }
 
   revalidatePath("/admin/mesaje");
@@ -104,22 +105,30 @@ async function syncTelegramMessage(updated: {
   status: string;
   mood: string | null;
   telegramMessageId: number | null;
+  telegramHtml: string | null;
   productIds: string[];
 }) {
   if (!updated.telegramMessageId) return;
   const statusLabel = MESSAGE_STATUSES.find((s) => s.value === updated.status)?.label ?? updated.status;
   const moodLabel = MOODS.find((m) => m.value === updated.mood)?.label ?? null;
-  const products = await getProductsByIds(updated.productIds);
-  const text = buildContactMessageText({
-    name: updated.name,
-    phone: updated.phone,
-    email: updated.email,
-    message: updated.message,
-    source: updated.source,
-    statusLabel,
-    moodLabel,
-    products,
-  });
+
+  let text: string;
+  if (updated.telegramHtml) {
+    text = updateStatusMoodInHtml(updated.telegramHtml, statusLabel, moodLabel);
+  } else {
+    const products = await getProductsByIds(updated.productIds);
+    text = buildContactMessageText({
+      name: updated.name,
+      phone: updated.phone,
+      email: updated.email,
+      message: updated.message,
+      source: updated.source,
+      statusLabel,
+      moodLabel,
+      products,
+    });
+  }
+  await prisma.contactMessage.update({ where: { id: updated.id }, data: { telegramHtml: text } });
   const buttons = STATUSES_REQUIRING_CONFIRMATION.includes(updated.status) ? [] : buildMessageButtons(updated.id);
   await editTelegramMessage(updated.telegramMessageId, text, buttons);
 }

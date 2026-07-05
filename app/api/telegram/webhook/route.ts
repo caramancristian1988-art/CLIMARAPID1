@@ -8,6 +8,7 @@ import {
   editTelegramReplyMarkup,
   answerCallbackQuery,
   buildContactMessageText,
+  updateStatusMoodInHtml,
   buildMessageButtons,
   buildConfirmButtons,
   STATUSES_REQUIRING_CONFIRMATION,
@@ -88,47 +89,52 @@ export async function POST(request: NextRequest) {
     const statusLabel = MESSAGE_STATUSES.find((s) => s.value === updated.status)?.label ?? updated.status;
     const moodLabel = MOODS.find((m) => m.value === updated.mood)?.label ?? null;
 
-    const productIds = existing.productIds ?? [];
-    let products = productIds.length
-      ? await prisma.product.findMany({ where: { id: { in: productIds } }, select: { name: true, slug: true } })
-      : [];
-
-    // Fallback for older messages where productIds weren't saved: parse product
-    // names from the stored message text ("1x Name — Price MDL/buc" lines).
-    if (products.length === 0 && existing.message) {
-      const names = existing.message
-        .split("\n")
-        .filter((l) => /^\d+x /.test(l))
-        .map((l) => l.replace(/^\d+x /, "").replace(/ — .*$/, "").trim())
-        .filter(Boolean);
-      if (names.length > 0) {
-        products = await prisma.product.findMany({
-          where: { name: { in: names } },
-          select: { name: true, slug: true },
-        });
+    // Use stored HTML (with product links) and only replace status/mood lines.
+    // Fallback to full rebuild for old messages without stored HTML.
+    let text: string;
+    if (existing.telegramHtml) {
+      text = updateStatusMoodInHtml(existing.telegramHtml, statusLabel, moodLabel);
+    } else {
+      const productIds = existing.productIds ?? [];
+      let products = productIds.length
+        ? await prisma.product.findMany({ where: { id: { in: productIds } }, select: { name: true, slug: true } })
+        : [];
+      if (products.length === 0 && existing.message) {
+        const names = existing.message
+          .split("\n")
+          .filter((l) => /^\d+x /.test(l))
+          .map((l) => l.replace(/^\d+x /, "").replace(/\s+[—\-–]\s+.*$/, "").trim())
+          .filter(Boolean);
+        if (names.length > 0) {
+          products = await prisma.product.findMany({
+            where: { name: { in: names } },
+            select: { name: true, slug: true },
+          });
+        }
       }
+      text = buildContactMessageText({
+        name: updated.name,
+        phone: updated.phone,
+        email: updated.email,
+        message: updated.message,
+        source: updated.source,
+        statusLabel,
+        moodLabel,
+        products,
+      });
     }
 
-    const text = buildContactMessageText({
-      name: updated.name,
-      phone: updated.phone,
-      email: updated.email,
-      message: updated.message,
-      source: updated.source,
-      statusLabel,
-      moodLabel,
-      products,
-    });
+    // Persist updated HTML so future edits also preserve links.
+    await prisma.contactMessage.update({ where: { id }, data: { telegramHtml: text } });
 
     let editError: string | null = null;
     if (existing.telegramMessageId) {
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
       editError = await editTelegramMessage(existing.telegramMessageId, text, buttons);
     }
-    const dbg = `ids:${productIds.length} p:${products.length} names:${products.map(p=>p.name.slice(0,8)).join("|")}`;
     const confirmText = editError
-      ? `Eroare edit: ${editError.slice(0, 100)}`
-      : `${isMood ? "Reacție" : statusLabel} | ${dbg}`;
+      ? `Eroare edit: ${editError.slice(0, 150)}`
+      : isMood ? `Reacție salvată.` : `Status: ${statusLabel}`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
   } catch (err) {
