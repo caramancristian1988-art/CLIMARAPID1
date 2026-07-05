@@ -28,13 +28,13 @@ export async function sendTelegramMessage(text: string, buttons: InlineButton[][
   }
 }
 
-export async function editTelegramMessage(messageId: number, text: string, buttons: InlineButton[][]): Promise<void> {
+export async function editTelegramMessage(messageId: number, text: string, buttons: InlineButton[][]): Promise<string | null> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) return;
+  if (!token || !chatId) return null;
 
   try {
-    await fetch(`${TELEGRAM_API}/bot${token}/editMessageText`, {
+    const res = await fetch(`${TELEGRAM_API}/bot${token}/editMessageText`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -45,8 +45,15 @@ export async function editTelegramMessage(messageId: number, text: string, butto
         reply_markup: { inline_keyboard: buttons },
       }),
     });
-  } catch {
-    // ignore
+    const data = await res.json();
+    if (!data.ok) {
+      console.error("[telegram] editMessageText failed:", data.description, "| text length:", text.length);
+      return data.description ?? "unknown error";
+    }
+    return null;
+  } catch (e) {
+    console.error("[telegram] editMessageText exception:", e);
+    return String(e);
   }
 }
 

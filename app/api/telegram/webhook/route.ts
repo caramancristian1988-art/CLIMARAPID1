@@ -104,11 +104,14 @@ export async function POST(request: NextRequest) {
       products,
     });
 
+    let editError: string | null = null;
     if (existing.telegramMessageId) {
       const buttons = isConfirm ? [] : buildMessageButtons(updated.id);
-      await editTelegramMessage(existing.telegramMessageId, text, buttons);
+      editError = await editTelegramMessage(existing.telegramMessageId, text, buttons);
     }
-    const confirmText = isMood ? `Reacție salvată.` : `Status: ${statusLabel}`;
+    const confirmText = editError
+      ? `Eroare edit: ${editError.slice(0, 150)}`
+      : isMood ? `Reacție salvată.` : `Status: ${statusLabel}`;
     await answerCallbackQuery(callbackQuery.id, confirmText);
     revalidatePath("/admin/mesaje");
   } catch (err) {
