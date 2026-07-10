@@ -4,15 +4,29 @@ import { useState } from "react";
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "exists">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
     setStatus("loading");
-    await new Promise((r) => setTimeout(r, 800));
-    setStatus("success");
-    setEmail("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setEmail("");
+      } else if (res.status === 409) {
+        setStatus("exists");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {
@@ -22,6 +36,17 @@ export default function NewsletterForm() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
         Te-ai abonat cu succes!
+      </div>
+    );
+  }
+
+  if (status === "exists") {
+    return (
+      <div className="flex items-center gap-2 text-yellow-400 text-sm font-medium">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Ești deja abonat!
       </div>
     );
   }
@@ -50,6 +75,9 @@ export default function NewsletterForm() {
           </svg>
         )}
       </button>
+      {status === "error" && (
+        <p className="absolute -bottom-5 left-0 text-[11px] text-red-400">Eroare. Încearcă din nou.</p>
+      )}
     </form>
   );
 }
