@@ -111,7 +111,7 @@ export default async function MentenantaPage() {
       {/* ── HERO – DESKTOP ── */}
       <section className="hidden sm:flex relative min-h-[420px] overflow-hidden">
         <Image src={heroImageDesktop} alt="Mentenanță condiționere" fill className="object-cover object-right" priority />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, white 0%, white 25%, transparent 70%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, white, transparent 60%)" }} />
         <div className="absolute inset-0 flex flex-col justify-center max-w-7xl mx-auto px-6 lg:px-12">
           <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-5">
             <Link href="/" className="hover:text-[#c7092b] transition-colors">Acasă</Link>
