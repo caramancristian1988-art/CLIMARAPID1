@@ -18,76 +18,244 @@ function buildEmail(
 ) {
   const BASE = "https://www.climatrapid.md";
 
-  const productRows = products.reduce<string[]>((acc, _p, i) => {
-    if (i % 3 === 0) {
-      const slice = products.slice(i, i + 3);
-      acc.push(`
+  const productCards = products.map((p) => `
+    <td width="180" valign="top" style="padding:8px">
+      <table cellpadding="0" cellspacing="0" width="180" style="border-radius:12px;overflow:hidden;border:1px solid #eee;background:#fff">
         <tr>
-          ${slice.map((p) => `
-            <td style="width:33%;vertical-align:top;padding:6px">
-              <a href="${BASE}/produse/${p.slug}" style="text-decoration:none;color:inherit;display:block">
-                <div style="border:1px solid #f0f0f0;border-radius:10px;overflow:hidden;background:#fff">
-                  ${p.image
-                    ? `<img src="${p.image}" alt="${p.name}" width="100%" style="display:block;height:130px;object-fit:cover" />`
-                    : `<div style="height:130px;background:#f5f5f5"></div>`
-                  }
-                  <div style="padding:10px">
-                    <p style="margin:0 0 5px;font-size:12px;font-weight:600;color:#1a1a1a;line-height:1.3">${p.name}</p>
-                    ${p.oldPrice ? `<p style="margin:0;font-size:11px;color:#999;text-decoration:line-through">${p.oldPrice.toLocaleString("ro-RO")} Lei</p>` : ""}
-                    <p style="margin:2px 0 0;font-size:15px;font-weight:700;color:#c7092b">${p.price.toLocaleString("ro-RO")} Lei</p>
-                  </div>
-                </div>
-              </a>
-            </td>
-          `).join("")}
+          <td>
+            ${p.image
+              ? `<a href="${BASE}/produse/${p.slug}"><img src="${p.image}" alt="${p.name}" width="180" height="140" style="display:block;width:180px;height:140px;object-fit:cover" /></a>`
+              : `<div style="height:140px;background:#f5f5f5;display:flex;align-items:center;justify-content:center"></div>`}
+          </td>
         </tr>
-      `);
-    }
-    return acc;
-  }, []);
+        <tr>
+          <td style="padding:12px 12px 6px">
+            <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#1a1a1a;line-height:1.4;font-family:Arial,sans-serif">${p.name}</p>
+            ${p.oldPrice ? `<p style="margin:0 0 2px;font-size:11px;color:#aaa;text-decoration:line-through;font-family:Arial,sans-serif">${p.oldPrice.toLocaleString("ro-RO")} Lei</p>` : ""}
+            <p style="margin:0;font-size:16px;font-weight:900;color:#c7092b;font-family:Arial,sans-serif">${p.price.toLocaleString("ro-RO")} Lei</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:6px 12px 12px">
+            <a href="${BASE}/produse/${p.slug}" style="display:block;text-align:center;background:#c7092b;color:#fff;font-size:12px;font-weight:700;padding:8px;border-radius:8px;text-decoration:none;font-family:Arial,sans-serif">
+              Comandă acum
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  `);
 
-  return `
-    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8f8f8;padding:24px">
-      <!-- Header -->
-      <div style="background:#1d2353;padding:18px 24px;border-radius:10px 10px 0 0;text-align:center">
-        <span style="color:#fff;font-size:20px;font-weight:900;letter-spacing:-0.5px">CLIMAT <span style="color:#c7092b">RAPID</span></span>
-      </div>
+  const productRows: string[] = [];
+  for (let i = 0; i < productCards.length; i += 3) {
+    const slice = productCards.slice(i, i + 3);
+    productRows.push(`<tr>${slice.join("")}</tr>`);
+  }
 
-      <!-- Body -->
-      <div style="background:#fff;padding:28px 24px;border-radius:0 0 10px 10px">
+  const hasProducts = products.length > 0;
 
-        ${offerLabel ? `
-        <div style="display:inline-block;background:#fdf2f3;border:1px solid #f5c6cb;color:#c7092b;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:16px">
-          ${offerLabel}
-        </div>
-        ` : ""}
+  return `<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${subject}</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f2f5;font-family:Arial,sans-serif">
 
-        <h2 style="margin:0 0 12px;font-size:20px;color:#1a1a1a;font-weight:800">${subject}</h2>
+  <table cellpadding="0" cellspacing="0" width="100%" style="background:#f0f2f5;padding:32px 16px">
+    <tr>
+      <td align="center">
+        <table cellpadding="0" cellspacing="0" width="600" style="max-width:600px">
 
-        <p style="margin:0 0 24px;color:#555;font-size:14px;line-height:1.7;white-space:pre-line">${message}</p>
+          <!-- ── HEADER ── -->
+          <tr>
+            <td style="background:#1d2353;border-radius:16px 16px 0 0;padding:0">
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td style="padding:22px 32px 0">
+                    <table cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td>
+                          <span style="color:#fff;font-size:22px;font-weight:900;letter-spacing:-1px;font-family:Arial,sans-serif">
+                            CLIMAT <span style="color:#c7092b">RAPID</span>
+                          </span>
+                          <p style="margin:2px 0 0;color:rgba(255,255,255,0.45);font-size:11px;font-family:Arial,sans-serif;letter-spacing:0.5px;text-transform:uppercase">
+                            Soluții complete de climatizare
+                          </p>
+                        </td>
+                        <td align="right" valign="middle">
+                          <a href="${BASE}" style="color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;font-family:Arial,sans-serif">
+                            climatrapid.md
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Hero band -->
+                <tr>
+                  <td style="padding:28px 32px 32px">
+                    ${offerLabel ? `
+                    <table cellpadding="0" cellspacing="0" style="margin-bottom:14px">
+                      <tr>
+                        <td style="background:#c7092b;color:#fff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;font-family:Arial,sans-serif;letter-spacing:0.5px;text-transform:uppercase">
+                          ${offerLabel}
+                        </td>
+                      </tr>
+                    </table>
+                    ` : ""}
+                    <h1 style="margin:0 0 12px;font-size:26px;font-weight:900;color:#fff;line-height:1.2;font-family:Arial,sans-serif">
+                      ${subject}
+                    </h1>
+                    <p style="margin:0;color:rgba(255,255,255,0.7);font-size:14px;line-height:1.7;font-family:Arial,sans-serif;white-space:pre-line">
+                      ${message}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-        ${products.length > 0 ? `
-        <div style="margin-bottom:24px">
-          <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px">Produse recomandate</p>
-          <table cellpadding="0" cellspacing="0" style="width:100%">
-            ${productRows.join("")}
-          </table>
-        </div>
-        ` : ""}
+          <!-- ── RED ACCENT STRIPE ── -->
+          <tr>
+            <td height="5" style="background:#c7092b;font-size:0;line-height:0">&nbsp;</td>
+          </tr>
 
-        <div style="text-align:center;margin-top:24px">
-          <a href="${BASE}/produse" style="display:inline-block;padding:12px 32px;background:#c7092b;color:#fff;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none">
-            Vezi toate produsele
-          </a>
-        </div>
+          <!-- ── BODY ── -->
+          <tr>
+            <td style="background:#fff;padding:32px">
 
-        <p style="margin-top:28px;font-size:11px;color:#bbb;text-align:center;line-height:1.6">
-          Ai primit acest email deoarece ești abonat la noutățile Climat Rapid.<br/>
-          <a href="${BASE}" style="color:#bbb">climatrapid.md</a>
-        </p>
-      </div>
-    </div>
-  `;
+              ${hasProducts ? `
+              <!-- Products section header -->
+              <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:20px">
+                <tr>
+                  <td>
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="4" style="background:#c7092b;border-radius:2px">&nbsp;</td>
+                        <td width="12">&nbsp;</td>
+                        <td>
+                          <p style="margin:0;font-size:15px;font-weight:800;color:#1a1a1a;font-family:Arial,sans-serif;text-transform:uppercase;letter-spacing:0.5px">
+                            Produse recomandate
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="right" valign="middle">
+                    <a href="${BASE}/produse" style="font-size:12px;color:#c7092b;text-decoration:none;font-weight:600;font-family:Arial,sans-serif">
+                      Vezi toate →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Product cards -->
+              <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:28px">
+                ${productRows.join("")}
+              </table>
+              ` : ""}
+
+              <!-- CTA -->
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="center" style="padding:8px 0 4px">
+                    <a href="${BASE}/produse"
+                      style="display:inline-block;background:#c7092b;color:#fff;font-size:15px;font-weight:700;padding:14px 40px;border-radius:10px;text-decoration:none;font-family:Arial,sans-serif;letter-spacing:0.3px">
+                      Explorează toate produsele
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:12px 0 0">
+                    <a href="${BASE}/contact"
+                      style="display:inline-block;color:#1d2353;font-size:13px;font-weight:600;padding:10px 28px;border-radius:8px;text-decoration:none;font-family:Arial,sans-serif;border:2px solid #e8eaf0">
+                      Contactează-ne pentru ofertă
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Divider -->
+              <table cellpadding="0" cellspacing="0" width="100%" style="margin:28px 0">
+                <tr>
+                  <td height="1" style="background:#f0f0f0;font-size:0;line-height:0">&nbsp;</td>
+                </tr>
+              </table>
+
+              <!-- Trust icons -->
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td width="33%" align="center" style="padding:0 8px">
+                    <p style="margin:0 0 4px;font-size:20px">🌡️</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;color:#1a1a1a;font-family:Arial,sans-serif">Instalare profesionistă</p>
+                    <p style="margin:2px 0 0;font-size:10px;color:#999;font-family:Arial,sans-serif">Echipă certificată</p>
+                  </td>
+                  <td width="33%" align="center" style="padding:0 8px;border-left:1px solid #f0f0f0;border-right:1px solid #f0f0f0">
+                    <p style="margin:0 0 4px;font-size:20px">✅</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;color:#1a1a1a;font-family:Arial,sans-serif">Garanție oficială</p>
+                    <p style="margin:2px 0 0;font-size:10px;color:#999;font-family:Arial,sans-serif">Producători autorizați</p>
+                  </td>
+                  <td width="33%" align="center" style="padding:0 8px">
+                    <p style="margin:0 0 4px;font-size:20px">📞</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;color:#1a1a1a;font-family:Arial,sans-serif">Suport non-stop</p>
+                    <p style="margin:2px 0 0;font-size:10px;color:#999;font-family:Arial,sans-serif">Răspundem rapid</p>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- ── FOOTER ── -->
+          <tr>
+            <td style="background:#1d2353;border-radius:0 0 16px 16px;padding:24px 32px">
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td>
+                    <p style="margin:0 0 8px;color:#fff;font-size:14px;font-weight:900;font-family:Arial,sans-serif;letter-spacing:-0.5px">
+                      CLIMAT <span style="color:#c7092b">RAPID</span>
+                    </p>
+                    <p style="margin:0;color:rgba(255,255,255,0.45);font-size:11px;font-family:Arial,sans-serif;line-height:1.6">
+                      Mun. Chișinău, Moldova<br/>
+                      <a href="mailto:climatrapid@gmail.com" style="color:rgba(255,255,255,0.45);text-decoration:none">climatrapid@gmail.com</a>
+                    </p>
+                  </td>
+                  <td align="right" valign="top">
+                    <a href="${BASE}" style="display:inline-block;background:rgba(255,255,255,0.1);color:#fff;font-size:11px;padding:7px 16px;border-radius:6px;text-decoration:none;font-family:Arial,sans-serif;font-weight:600">
+                      Vizitează site-ul
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding-top:16px">
+                    <table cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td height="1" style="background:rgba(255,255,255,0.1);font-size:0;line-height:0">&nbsp;</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding-top:14px">
+                    <p style="margin:0;color:rgba(255,255,255,0.3);font-size:10px;font-family:Arial,sans-serif;line-height:1.6;text-align:center">
+                      Ai primit acest email deoarece ești abonat la noutățile Climat Rapid.<br/>
+                      © ${new Date().getFullYear()} Climat Rapid. Toate drepturile rezervate.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`;
 }
 
 export async function POST(req: NextRequest) {
