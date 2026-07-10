@@ -16,7 +16,7 @@ export default async function NewsletterAdminPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <AdminPageHeader title="Newsletter" subtitle={`${subscribers.length} abonat${subscribers.length !== 1 ? "ți" : ""}`} />
+      <AdminPageHeader title="Newsletter" description={`${subscribers.length} abonat${subscribers.length !== 1 ? "ți" : ""}`} />
 
       {subscribers.length === 0 ? (
         <div className="mt-8 text-center py-16 bg-white rounded-xl border border-gray-100 text-gray-400">
