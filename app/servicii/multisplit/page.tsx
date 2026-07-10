@@ -111,7 +111,7 @@ export default async function MultisplitPage() {
 
       {/* ── HERO – DESKTOP ── */}
       <section className="hidden sm:flex relative min-h-[520px] overflow-hidden">
-        <Image src={heroImageDesktop} alt="Sisteme multisplit" fill className="object-cover" style={{ objectPosition: "right 30%" }} priority />
+        <Image src={heroImageDesktop} alt="Sisteme multisplit" fill className="object-cover" style={{ objectPosition: "right 55%" }} priority />
         <div className="absolute inset-0" style={{ background: "linear-gradient(to right, white, transparent 60%)" }} />
         <div className="absolute inset-0 flex flex-col justify-center max-w-7xl mx-auto px-6 lg:px-12">
           <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-5">
