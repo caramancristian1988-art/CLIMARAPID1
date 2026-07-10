@@ -69,7 +69,7 @@ export default async function MultisplitPage() {
     checklist: inclus,
     testimonials: testimoniale,
   } = await getServiceDetail("/servicii/multisplit", {
-    detailImage: "/multisplit.png",
+    detailImage: "/IMG_2966.PNG",
     heroImageDesktop: "/multisplit.png",
     steps: defaultPasi,
     features: defaultFeatures,

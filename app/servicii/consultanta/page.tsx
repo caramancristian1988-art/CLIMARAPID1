@@ -67,7 +67,7 @@ export default async function ConsultantaPage() {
     checklist: inclus,
     testimonials: testimoniale,
   } = await getServiceDetail("/servicii/consultanta", {
-    detailImage: "/consultanta.png",
+    detailImage: "/IMG_2965.PNG",
     heroImageDesktop: "/consultanta.png",
     steps: defaultPasi,
     features: defaultFeatures,

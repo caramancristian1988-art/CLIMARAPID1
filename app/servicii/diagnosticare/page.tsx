@@ -68,7 +68,7 @@ export default async function DiagnosticareReparatiiPage() {
     checklist: inclus,
     testimonials: testimoniale,
   } = await getServiceDetail("/servicii/diagnosticare", {
-    detailImage: "/reparatii.png",
+    detailImage: "/IMG_2964.PNG",
     heroImageDesktop: "/reparatii.png",
     steps: defaultPasi,
     features: defaultFeatures,

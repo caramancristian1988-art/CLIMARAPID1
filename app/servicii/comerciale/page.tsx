@@ -69,7 +69,7 @@ export default async function ComercialePage() {
     checklist: inclus,
     testimonials: testimoniale,
   } = await getServiceDetail("/servicii/comerciale", {
-    detailImage: "/Sisteme%20comerciale.png",
+    detailImage: "/IMG_2967.PNG",
     heroImageDesktop: "/Sisteme%20comerciale.png",
     steps: defaultPasi,
     features: defaultFeatures,
