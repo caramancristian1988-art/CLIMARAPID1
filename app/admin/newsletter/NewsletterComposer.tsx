@@ -86,7 +86,7 @@ export default function NewsletterComposer({ subscribers, categories, brands }: 
   }
 
   async function handleSend() {
-    if (!selectedSubscribers.size || !subject.trim() || !message.trim()) return;
+    if (!selectedSubscribers.size || !subject.trim()) return;
     setSending(true);
     setSentMsg(null);
     const res = await fetch("/api/newsletter/send", {
