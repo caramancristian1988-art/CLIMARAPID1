@@ -110,8 +110,10 @@ export default async function MultisplitPage() {
       </section>
 
       {/* ── HERO – DESKTOP ── */}
-      <section className="hidden sm:grid grid-cols-1 lg:grid-cols-2 min-h-[420px]">
-        <div className="flex flex-col justify-center px-6 lg:px-12 py-12 bg-white">
+      <section className="hidden sm:flex relative min-h-[420px] overflow-hidden">
+        <Image src={heroImageDesktop} alt="Sisteme multisplit" fill className="object-cover object-right" priority />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, white 0%, white 25%, transparent 70%)" }} />
+        <div className="absolute inset-0 flex flex-col justify-center max-w-7xl mx-auto px-6 lg:px-12">
           <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-5">
             <Link href="/" className="hover:text-[#c7092b] transition-colors">Acasă</Link>
             <span>›</span>
@@ -139,9 +141,6 @@ export default async function MultisplitPage() {
               </svg>
             </Link>
           </div>
-        </div>
-        <div className="relative min-h-[280px] lg:min-h-0">
-          <Image src={heroImageDesktop} alt="Sisteme multisplit" fill className="object-cover object-center" priority />
         </div>
       </section>
 
