@@ -1,8 +1,10 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
+import JsonLd from "@/app/components/JsonLd";
+import ServicePageJsonLd from "@/app/components/ServicePageJsonLd";
 import { getPromoProducts } from "@/lib/promoProducts";
 import { getServiceDetail } from "@/lib/serviceDetail";
 import ProductsSection from "@/app/components/ProductsSection";
@@ -111,6 +113,7 @@ export default async function InstalareePage() {
 
   return (
     <div className="bg-white text-[#1d2353]">
+      <ServicePageJsonLd name="Instalare conditionere" description="Instalare profesionala de conditionere si sisteme de climatizare in Chisinau si toata Moldova." slug="servicii/instalare" phone={phoneTel} />
 
       {/* ── HERO – MOBILE ── */}
       <section className="sm:hidden relative overflow-hidden" style={{ height: "110vw", minHeight: 400 }}>

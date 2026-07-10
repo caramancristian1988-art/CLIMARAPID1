@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags } from "@/lib/siteSettings";
 import { prisma } from "@/lib/prisma";
+import JsonLd from "@/app/components/JsonLd";
 
 export const revalidate = 3600;
 
@@ -107,8 +108,28 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       readTime: "5 min citire",
       image: post.image ?? "/30634e25-d3ae-42fc-b1cd-cb9ab4ce60da.png",
     };
+    const BASE = "https://www.climatrapid.md";
+    const absImage = post.image ? (post.image.startsWith("http") ? post.image : `${BASE}${post.image}`) : undefined;
+    const articleSchema = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": post.title,
+      "description": post.description,
+      "datePublished": post.createdAt.toISOString(),
+      "dateModified": post.createdAt.toISOString(),
+      ...(absImage ? { "image": [absImage] } : {}),
+      "author": { "@type": "Organization", "name": "Climat Rapid", "url": BASE },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Climat Rapid",
+        "url": BASE,
+        "logo": { "@type": "ImageObject", "url": `${BASE}/logo.png` },
+      },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${BASE}/blog/${slug}` },
+    };
     return (
       <main>
+        <JsonLd data={articleSchema} />
         <section className="relative h-[320px] sm:h-[420px] overflow-hidden">
           <Image src={postArticle.image} alt={postArticle.title} fill className="object-cover object-center" priority sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />

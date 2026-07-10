@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import FaqAccordion, { type FaqItem } from "@/app/components/FaqAccordion";
+import JsonLd from "@/app/components/JsonLd";
 
 export const revalidate = 3600;
 
@@ -39,8 +40,19 @@ async function getFaqs(): Promise<FaqItem[]> {
 export default async function FaqPage() {
   const faqs = await getFaqs();
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map((f) => ({
+      "@type": "Question",
+      "name": f.question,
+      "acceptedAnswer": { "@type": "Answer", "text": f.answer },
+    })),
+  };
+
   return (
     <main className="bg-white min-h-screen">
+      <JsonLd data={faqSchema} />
       <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14">
         <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-6">
           <Link href="/" className="hover:text-[#c7092b] transition-colors">Acasă</Link>

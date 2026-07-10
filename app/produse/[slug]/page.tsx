@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import JsonLd from "@/app/components/JsonLd";
 import {
   fallbackCategories,
   fallbackProducts,
@@ -511,8 +512,74 @@ async function ProductView({ product, category, related, reviews, faqs, ratesEna
     ? [displayImage]
     : [];
 
+  const BASE_URL = "https://www.climatrapid.md";
+  const productUrl = `${BASE_URL}/produse/${product.slug}`;
+  const absImage = displayImage
+    ? displayImage.startsWith("http") ? displayImage : `${BASE_URL}${displayImage}`
+    : undefined;
+
+  const breadcrumbItems = [
+    { "@type": "ListItem", position: 1, name: "Acasă", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Produse", item: `${BASE_URL}/produse` },
+    ...(category ? [{ "@type": "ListItem", position: 3, name: category.name, item: `${BASE_URL}/produse/${category.slug}` }] : []),
+    { "@type": "ListItem", position: category ? 4 : 3, name: displayName, item: productUrl },
+  ];
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": displayName,
+    "description": product.description ?? `Cumpără ${displayName} la Climat Rapid. Livrare și instalare profesională în toată Moldova.`,
+    ...(absImage ? { "image": [absImage] } : {}),
+    ...(product.brand ? { "brand": { "@type": "Brand", "name": product.brand } } : {}),
+    ...(product.btu ? { "additionalProperty": [{ "@type": "PropertyValue", "name": "BTU", "value": product.btu }] } : {}),
+    "offers": {
+      "@type": "Offer",
+      "url": productUrl,
+      "priceCurrency": "MDL",
+      "price": product.price.toFixed(2),
+      "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0],
+      "availability": inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "itemCondition": "https://schema.org/NewCondition",
+      "seller": { "@type": "Organization", "name": "Climat Rapid", "url": BASE_URL },
+    },
+    ...(reviews.length > 0 ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1),
+        "reviewCount": reviews.length,
+        "bestRating": 5,
+        "worstRating": 1,
+      },
+      "review": reviews.slice(0, 5).map((r) => ({
+        "@type": "Review",
+        "reviewRating": { "@type": "Rating", "ratingValue": r.rating, "bestRating": 5 },
+        "author": { "@type": "Person", "name": r.name },
+        "reviewBody": r.text,
+      })),
+    } : {}),
+  };
+
+  const schemas: Record<string, unknown>[] = [
+    productSchema,
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": breadcrumbItems },
+  ];
+
+  if (faqs.length > 0) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map((f) => ({
+        "@type": "Question",
+        "name": f.question,
+        "acceptedAnswer": { "@type": "Answer", "text": f.answer },
+      })),
+    });
+  }
+
   return (
     <main className="bg-white">
+      {schemas.map((s, i) => <JsonLd key={i} data={s} />)}
 
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pt-5 pb-2">
