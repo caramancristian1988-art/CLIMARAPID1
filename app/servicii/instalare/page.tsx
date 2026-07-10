@@ -101,8 +101,8 @@ export default async function InstalareePage() {
     checklist: inclus,
     testimonials: testimoniale,
   } = await getServiceDetail("/servicii/instalare", {
-    detailImage: "/IMG_2963.PNG",
-    heroImageDesktop: "/IMG_2848.PNG",
+    detailImage: "/instalare.png",
+    heroImageDesktop: "/instalare.png",
     steps: defaultPasi,
     features: defaultFeatures,
     checklist: defaultInclus,

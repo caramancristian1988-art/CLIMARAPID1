@@ -68,8 +68,8 @@ export default async function MentenantaPage() {
     checklist: inclus,
     testimonials: testimoniale,
   } = await getServiceDetail("/servicii/mentenanta", {
-    detailImage: "/IMG_2968.PNG",
-    heroImageDesktop: "/IMG_2848.PNG",
+    detailImage: "/mententa.png",
+    heroImageDesktop: "/mententa.png",
     steps: defaultPasi,
     features: defaultFeatures,
     checklist: defaultInclus,
