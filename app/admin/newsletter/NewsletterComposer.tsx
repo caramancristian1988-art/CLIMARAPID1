@@ -123,7 +123,7 @@ export default function NewsletterComposer({ subscribers, categories, brands }: 
           <span className="text-sm font-semibold text-gray-700 mr-1">Produse pentru ofertă</span>
           <input
             type="text"
-            placeholder="Caută produs..."
+            placeholder="Caută după nume sau ID produs..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 min-w-[140px] h-8 px-3 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#c7092b]"
