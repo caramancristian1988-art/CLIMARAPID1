@@ -316,6 +316,7 @@ export async function POST(req: NextRequest) {
   try {
     await transporter.sendMail({
       from: `"Climat Rapid" <${process.env.EMAIL_FROM}>`,
+      to: process.env.EMAIL_FROM,
       replyTo: process.env.EMAIL_FROM,
       bcc: emails,
       subject: subject.trim(),
