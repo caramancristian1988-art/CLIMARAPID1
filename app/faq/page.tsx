@@ -6,8 +6,17 @@ import FaqAccordion, { type FaqItem } from "@/app/components/FaqAccordion";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Întrebări frecvente | Climat Rapid",
-  description: "Răspunsuri la cele mai frecvente întrebări despre produsele, instalarea și serviciile Climat Rapid.",
+  title: "Întrebări frecvente",
+  description: "Răspunsuri la cele mai frecvente întrebări despre condiționere, instalare, garanție și servicii Climat Rapid în Moldova.",
+  keywords: [
+    "intrebari conditioner Moldova",
+    "FAQ climatizare",
+    "cum aleg conditioner Moldova",
+    "garantie conditioner Moldova",
+    "instalare conditioner pret Moldova",
+    "intretinere aer conditionat Moldova",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/faq" },
 };
 
 const FALLBACK_FAQS: FaqItem[] = [

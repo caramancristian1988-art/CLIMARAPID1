@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
 import { getPromoProducts } from "@/lib/promoProducts";
@@ -7,6 +8,24 @@ import { getServiceDetail } from "@/lib/serviceDetail";
 import ProductsSection from "@/app/components/ProductsSection";
 import ServiceStepIcon from "@/app/components/ServiceStepIcon";
 import ServiceFeatureIcon from "@/app/components/ServiceFeatureIcon";
+
+export const metadata: Metadata = {
+  title: "Climatizare comercială & industrială",
+  description:
+    "Soluții de climatizare pentru spații comerciale, birouri, magazine și hale industriale în Moldova. Proiectare, instalare și mentenanță sisteme de climatizare comerciale.",
+  keywords: [
+    "climatizare comerciala Moldova",
+    "climatizare industriala Chisinau",
+    "conditioner birou Moldova",
+    "aer conditionat spatiu comercial",
+    "instalare climatizare magazin Moldova",
+    "sistem climatizare hala Moldova",
+    "VRF Moldova",
+    "canal de aer conditionat Moldova",
+    "Climat Rapid comercial",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/servicii/comerciale" },
+};
 
 export const revalidate = 3600;
 

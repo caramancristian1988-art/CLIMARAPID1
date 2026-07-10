@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
 import { getPromoProducts } from "@/lib/promoProducts";
@@ -7,6 +8,23 @@ import { getServiceDetail } from "@/lib/serviceDetail";
 import ProductsSection from "@/app/components/ProductsSection";
 import ServiceStepIcon from "@/app/components/ServiceStepIcon";
 import ServiceFeatureIcon from "@/app/components/ServiceFeatureIcon";
+
+export const metadata: Metadata = {
+  title: "Diagnosticare & reparație condiționere",
+  description:
+    "Diagnosticare rapidă și reparație profesională a sistemelor de climatizare în Moldova. Identificăm și reparăm orice pană, cu piese originale și garanție pe lucrare.",
+  keywords: [
+    "reparatie conditioner Moldova",
+    "diagnosticare aer conditionat Chisinau",
+    "service reparatie climatizare Moldova",
+    "conditioner defect Moldova",
+    "reparatie split system Chisinau",
+    "depanare aer conditionat Moldova",
+    "piese conditioner Moldova",
+    "Climat Rapid reparatie",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/servicii/diagnosticare" },
+};
 
 export const revalidate = 3600;
 

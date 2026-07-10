@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
 import { getPromoProducts } from "@/lib/promoProducts";
@@ -7,6 +8,24 @@ import { getServiceDetail } from "@/lib/serviceDetail";
 import ProductsSection from "@/app/components/ProductsSection";
 import ServiceStepIcon from "@/app/components/ServiceStepIcon";
 import ServiceFeatureIcon from "@/app/components/ServiceFeatureIcon";
+
+export const metadata: Metadata = {
+  title: "Sisteme multisplit",
+  description:
+    "Instalare sisteme multisplit în Moldova — o unitate externă, mai multe camere climatizate. Soluție ideală pentru case, vile și birouri. Ofertă și montaj profesional.",
+  keywords: [
+    "multisplit Moldova",
+    "sistem multisplit Chisinau",
+    "instalare multisplit Moldova",
+    "multi split aer conditionat Moldova",
+    "climatizare multi camera Moldova",
+    "un exterior mai multe camere conditioner",
+    "multisplit Daikin Moldova",
+    "multisplit Mitsubishi Moldova",
+    "Climat Rapid multisplit",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/servicii/multisplit" },
+};
 
 export const revalidate = 3600;
 

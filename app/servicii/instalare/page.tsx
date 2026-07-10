@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
 import { getPromoProducts } from "@/lib/promoProducts";
@@ -7,6 +8,26 @@ import { getServiceDetail } from "@/lib/serviceDetail";
 import ProductsSection from "@/app/components/ProductsSection";
 import ServiceStepIcon from "@/app/components/ServiceStepIcon";
 import ServiceFeatureIcon from "@/app/components/ServiceFeatureIcon";
+
+export const metadata: Metadata = {
+  title: "Instalare condiționere",
+  description:
+    "Instalare profesională de condiționere și sisteme de climatizare în Chișinău și toată Moldova. Tehnicieni autorizați, lucrare curată și rapidă. Garanție pe manoperă.",
+  keywords: [
+    "instalare conditioner Moldova",
+    "montaj aer conditionat Chisinau",
+    "instalare climatizare Moldova",
+    "instalare split system Moldova",
+    "montaj conditioner Chisinau",
+    "instalare inverter Moldova",
+    "instalare Daikin Moldova",
+    "instalare Mitsubishi Electric Moldova",
+    "instalare aer conditionat pret",
+    "echipa instalare climatizare",
+    "Climat Rapid instalare",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/servicii/instalare" },
+};
 
 export const revalidate = 3600;
 

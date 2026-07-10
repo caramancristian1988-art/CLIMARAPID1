@@ -1,8 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSectionFlags } from "@/lib/siteSettings";
+
+export const metadata: Metadata = {
+  title: "Servicii",
+  description:
+    "Servicii profesionale de instalare, mentenanță, diagnosticare și consultanță pentru sisteme de climatizare în Moldova. Echipă autorizată, prețuri corecte.",
+  keywords: [
+    "servicii climatizare Moldova",
+    "instalare conditioner Chisinau",
+    "mentenanta aer conditionat Moldova",
+    "service conditioner Chisinau",
+    "diagnosticare climatizare",
+    "multisplit Moldova",
+    "climatizare comerciala Moldova",
+    "consultanta climatizare",
+    "Climat Rapid servicii",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/servicii" },
+};
 
 export const revalidate = 3600;
 

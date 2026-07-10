@@ -24,9 +24,24 @@ import {
 import { localProductImages, localProductBadges, localProductNames } from "@/lib/productOverrides";
 
 export const metadata: Metadata = {
-  title: "Produse | Climat Rapid — Aparate de aer condiționat și accesorii",
+  title: "Condiționere & accesorii",
   description:
-    "Descoperă gama completă de aparate de aer condiționat, sisteme multisplit, portabile și accesorii disponibile la Climat Rapid.",
+    "Magazin online condiționere Moldova — Daikin, Mitsubishi, Gree, Midea, Cooper&Hunter. Aparate rezidențiale, comerciale, sisteme multisplit. Livrare și instalare în toată Moldova.",
+  keywords: [
+    "conditioner Moldova pret",
+    "magazin condiționere online Moldova",
+    "Daikin pret Moldova",
+    "Mitsubishi Electric conditioner Moldova",
+    "Gree conditioner Moldova",
+    "Midea aer conditionat Moldova",
+    "Cooper Hunter Moldova",
+    "aer conditionat ieftin Moldova",
+    "multisplit pret Moldova",
+    "aparate climatizare Moldova",
+    "conditioner inverter Moldova",
+    "Chisinau conditioner",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/produse" },
 };
 
 export const revalidate = 3600;

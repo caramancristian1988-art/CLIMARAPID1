@@ -13,18 +13,39 @@ import { FloatingUIProvider } from "./components/FloatingUIState";
 import { getSectionFlags, getHeaderCategories, getSocialLinks, getContactInfo } from "@/lib/siteSettings";
 
 export const metadata: Metadata = {
-  title: "Climat Rapid — Condiționere & Climatizare Moldova",
+  metadataBase: new URL("https://www.climatrapid.md"),
+  title: {
+    default: "Climat Rapid — Condiționere & Climatizare Moldova",
+    template: "%s | Climat Rapid",
+  },
   description:
-    "Magazin online de condiționere și sisteme de climatizare. Livrare și instalare în Moldova. Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
-  keywords:
-    "conditioner, climatizare, aer conditionat, Moldova, Chisinau, Daikin, Mitsubishi, instalare",
+    "Magazin online de condiționere și sisteme de climatizare în Moldova. Vânzare, livrare și instalare profesională — Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
+  keywords: [
+    "conditioner Moldova",
+    "aer conditionat Moldova",
+    "climatizare Chisinau",
+    "conditioner Chisinau",
+    "instalare aer conditionat Moldova",
+    "Daikin Moldova",
+    "Mitsubishi Electric Moldova",
+    "Gree conditioner",
+    "Midea aer conditionat",
+    "conditioner ieftin Moldova",
+    "pret conditioner Moldova",
+    "magazin condiționere Moldova",
+    "climatizare industriala Moldova",
+    "multisplit Moldova",
+    "Climat Rapid",
+    "servire aer conditionat Chisinau",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md" },
   openGraph: {
     title: "Climat Rapid — Condiționere & Climatizare Moldova",
     description:
-      "Soluții complete de climatizare pentru locuința sau afacerea ta.",
+      "Vânzare, livrare și instalare condiționere în Moldova. Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
     locale: "ro_MD",
     type: "website",
-    url: "https://climatrapid.md",
+    url: "https://www.climatrapid.md",
     siteName: "Climat Rapid",
   },
   twitter: {

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
 import { getPromoProducts } from "@/lib/promoProducts";
@@ -7,6 +8,22 @@ import { getServiceDetail } from "@/lib/serviceDetail";
 import ProductsSection from "@/app/components/ProductsSection";
 import ServiceStepIcon from "@/app/components/ServiceStepIcon";
 import ServiceFeatureIcon from "@/app/components/ServiceFeatureIcon";
+
+export const metadata: Metadata = {
+  title: "Consultanță climatizare",
+  description:
+    "Consultanță gratuită pentru alegerea sistemului de climatizare potrivit casei sau afacerii tale. Specialiști Climat Rapid te ghidează spre cea mai bună soluție la prețul optim.",
+  keywords: [
+    "consultanta climatizare Moldova",
+    "ajutor alegere conditioner",
+    "ce conditioner sa cumpar Moldova",
+    "sfat conditioner Chisinau",
+    "alegere aer conditionat Moldova",
+    "consultanta gratuita climatizare",
+    "Climat Rapid consultanta",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/servicii/consultanta" },
+};
 
 export const revalidate = 3600;
 

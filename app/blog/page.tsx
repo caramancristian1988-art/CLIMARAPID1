@@ -8,9 +8,20 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Blog | Climat Rapid — Ghiduri, sfaturi și noutăți despre climatizare",
+  title: "Blog — Ghiduri și sfaturi despre climatizare",
   description:
-    "Articole despre climatizare, instalare, mentenanță și sfaturi de la experții Climat Rapid.",
+    "Ghiduri practice, sfaturi de la experți și noutăți despre condiționere, instalare, mentenanță și economie de energie. Blog Climat Rapid Moldova.",
+  keywords: [
+    "blog climatizare Moldova",
+    "ghid conditioner Moldova",
+    "sfaturi aer conditionat",
+    "cum aleg conditioner",
+    "mentenanta conditioner sfaturi",
+    "economie energie conditioner",
+    "instalare aer conditionat ghid",
+    "noutati climatizare Moldova",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/blog" },
 };
 
 const FALLBACK_ARTICLE = {

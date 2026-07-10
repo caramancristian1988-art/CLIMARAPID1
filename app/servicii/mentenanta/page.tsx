@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
 import { getPromoProducts } from "@/lib/promoProducts";
@@ -7,6 +8,23 @@ import { getServiceDetail } from "@/lib/serviceDetail";
 import ProductsSection from "@/app/components/ProductsSection";
 import ServiceStepIcon from "@/app/components/ServiceStepIcon";
 import ServiceFeatureIcon from "@/app/components/ServiceFeatureIcon";
+
+export const metadata: Metadata = {
+  title: "Mentenanță & curățare condiționere",
+  description:
+    "Servicii de mentenanță, curățare și igienizare a aparatelor de aer condiționat în Moldova. Prelungești durata de viață și eficiența energetică a sistemului tău.",
+  keywords: [
+    "mentenanta conditioner Moldova",
+    "curatare aer conditionat Chisinau",
+    "igienizare conditioner Moldova",
+    "service conditioner Moldova",
+    "revizie climatizare Moldova",
+    "curatare split system Chisinau",
+    "mentenanta anuala conditioner",
+    "Climat Rapid mentenanta",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/servicii/mentenanta" },
+};
 
 export const revalidate = 3600;
 

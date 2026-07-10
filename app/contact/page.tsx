@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { fallbackProducts } from "@/lib/fallbackData";
@@ -7,6 +8,22 @@ import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
 import ProductsSection from "../components/ProductsSection";
 import FaqAccordion, { type FaqItem } from "../components/FaqAccordion";
 import ContactForm from "../components/ContactForm";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description:
+    "Contactează Climat Rapid pentru condiționere, instalare și service în Moldova. Suntem disponibili telefonic, prin email sau online. Chisinau și toată Moldova.",
+  keywords: [
+    "contact Climat Rapid",
+    "instalare aer conditionat Chisinau",
+    "service climatizare Moldova",
+    "comanda conditioner Moldova",
+    "oferta conditioner Moldova",
+    "telefon Climat Rapid",
+    "consultanta climatizare Moldova",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/contact" },
+};
 
 export const revalidate = 3600;
 

@@ -5,8 +5,16 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Proiecte realizate | Climat Rapid",
-  description: "Portofoliu de proiecte de instalare și climatizare realizate de echipa Climat Rapid în Moldova.",
+  title: "Proiecte realizate",
+  description: "Portofoliu de proiecte de instalare și climatizare realizate de echipa Climat Rapid în Moldova. Case, birouri, spații comerciale climatizate profesional.",
+  keywords: [
+    "proiecte climatizare Moldova",
+    "instalari realizate Chisinau",
+    "portofoliu Climat Rapid",
+    "proiecte aer conditionat Moldova",
+    "referinte climatizare Moldova",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/proiecte" },
 };
 
 export const revalidate = 3600;

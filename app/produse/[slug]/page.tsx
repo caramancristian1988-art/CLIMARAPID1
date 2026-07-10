@@ -89,6 +89,8 @@ const getProductData = cache(async (slug: string) => {
   }
 });
 
+const BASE_URL = "https://www.climatrapid.md";
+
 export async function generateMetadata({
   params,
 }: {
@@ -98,27 +100,69 @@ export async function generateMetadata({
 
   const categoryData = await getCategoryData(slug);
   if (categoryData) {
+    const cat = categoryData.category;
+    const description =
+      cat.description ??
+      `Descoperă gama completă de ${cat.name.toLowerCase()} la Climat Rapid. Prețuri accesibile, livrare și instalare în Moldova.`;
+    const keywords = [
+      cat.name,
+      `${cat.name.toLowerCase()} Moldova`,
+      `${cat.name.toLowerCase()} Chisinau`,
+      `pret ${cat.name.toLowerCase()}`,
+      "aer conditionat Moldova",
+      "conditioner Moldova",
+      "instalare climatizare Moldova",
+      "Climat Rapid",
+    ].join(", ");
     return {
-      title: `${categoryData.category.name} | Climat Rapid`,
-      description:
-        categoryData.category.description ??
-        `Descoperă gama de ${categoryData.category.name.toLowerCase()} disponibilă la Climat Rapid.`,
+      title: cat.name,
+      description,
+      keywords,
+      alternates: { canonical: `${BASE_URL}/produse/${slug}` },
+      openGraph: {
+        title: `${cat.name} | Climat Rapid`,
+        description,
+        url: `${BASE_URL}/produse/${slug}`,
+      },
     };
   }
 
   const productData = await getProductData(slug);
   if (productData) {
-    const name = localProductNames[productData.product.slug] ?? productData.product.name;
+    const p = productData.product;
+    const name = localProductNames[p.slug] ?? p.name;
+    const priceStr = p.price.toLocaleString("ro-MD");
+    const btuStr = p.btu ? `, ${(p.btu / 1000).toFixed(0)}000 BTU` : "";
+    const brandStr = p.brand ? ` ${p.brand}` : "";
+    const techStr = p.technology && p.technology !== "On/Off" ? `, ${p.technology}` : "";
     const description =
-      productData.product.description ??
-      `Cumpără ${name} la cel mai bun preț, cu instalare profesională și garanție.`;
-    const image = productData.product.image;
+      p.description ??
+      `Cumpără ${name}${brandStr}${btuStr}${techStr} la prețul de ${priceStr} MDL. Livrare și instalare profesională în toată Moldova. Garanție 2 ani.`;
+    const image = p.image;
+    const keywords = [
+      name,
+      ...(p.brand ? [p.brand, `conditioner ${p.brand}`, `aer conditionat ${p.brand}`] : []),
+      ...(productData.category ? [productData.category.name] : []),
+      ...(p.btu ? [`${(p.btu / 1000).toFixed(0)}000 BTU`, `${(p.btu / 1000).toFixed(0)}kW`] : []),
+      ...(p.technology && p.technology !== "On/Off" ? [p.technology, `conditioner ${p.technology}`] : []),
+      ...(p.energyClass ? [`clasa energetică ${p.energyClass}`, `clasa ${p.energyClass}`] : []),
+      "aer conditionat Moldova",
+      "conditioner Moldova",
+      `pret ${name}`,
+      "instalare aer conditionat",
+      "climatizare Moldova",
+      "Chisinau",
+      "Climat Rapid",
+    ].filter(Boolean).join(", ");
     return {
-      title: `${name} | Climat Rapid`,
+      title: name,
       description,
+      keywords,
+      alternates: { canonical: `${BASE_URL}/produse/${slug}` },
       openGraph: {
         title: `${name} | Climat Rapid`,
         description,
+        url: `${BASE_URL}/produse/${slug}`,
         ...(image ? { images: [{ url: image, width: 800, height: 600, alt: name }] } : {}),
       },
       twitter: {

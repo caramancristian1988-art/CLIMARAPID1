@@ -7,9 +7,18 @@ import { getSectionFlags } from "@/lib/siteSettings";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Despre Noi | Climat Rapid",
+  title: "Despre noi",
   description:
-    "Află povestea Climat Rapid, companie specializată în soluții de climatizare, instalare și mentenanță în Moldova.",
+    "Climat Rapid — companie specializată în vânzarea, instalarea și mentenanța sistemelor de climatizare în Moldova. Peste 10 ani de experiență, 2500+ clienți mulțumiți.",
+  keywords: [
+    "despre Climat Rapid",
+    "companie climatizare Moldova",
+    "magazin conditioner Moldova",
+    "experienta climatizare Moldova",
+    "echipa instalare conditioner Chisinau",
+    "firma climatizare Moldova",
+  ],
+  alternates: { canonical: "https://www.climatrapid.md/despre" },
 };
 
 const stats = [
