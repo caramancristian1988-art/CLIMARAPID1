@@ -282,12 +282,23 @@ export async function POST(req: NextRequest) {
   const html = buildEmail(subject.trim(), offerLabel?.trim() || "", message.trim(), products);
   const emails = subscribers.map((s) => s.email);
 
-  await transporter.sendMail({
-    from: `"Climat Rapid" <${process.env.EMAIL_FROM}>`,
-    bcc: emails,
-    subject: subject.trim(),
-    html,
-  });
+  try {
+    await transporter.sendMail({
+      from: `"Climat Rapid" <${process.env.EMAIL_FROM}>`,
+      replyTo: process.env.EMAIL_FROM,
+      bcc: emails,
+      subject: subject.trim(),
+      html,
+      headers: {
+        "List-Unsubscribe": `<mailto:${process.env.EMAIL_FROM}?subject=Dezabonare>`,
+        "X-Mailer": "Climat Rapid Newsletter",
+      },
+    });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[newsletter/send] sendMail error:", msg);
+    return NextResponse.json({ error: `Eroare SMTP: ${msg}` }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true, sent: emails.length });
 }
