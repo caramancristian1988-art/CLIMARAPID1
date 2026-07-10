@@ -113,7 +113,7 @@ export default function NewsletterComposer({ subscribers, categories, brands }: 
     }
   }
 
-  const canSend = selectedSubscribers.size > 0 && subject.trim() && message.trim();
+  const canSend = selectedSubscribers.size > 0 && subject.trim();
 
   return (
     <div className="flex flex-col gap-6">
@@ -325,7 +325,7 @@ export default function NewsletterComposer({ subscribers, categories, brands }: 
             </div>
             <div className="flex-1">
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                Mesaj <span className="text-[#c7092b]">*</span>
+                Mesaj <span className="text-gray-400 font-normal">(opțional)</span>
               </label>
               <textarea
                 value={message}
