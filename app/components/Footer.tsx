@@ -1,30 +1,35 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import NewsletterForm from "./NewsletterForm";
 import type { SocialLinks } from "@/lib/siteSettings";
 
-const footerLinks = {
-  "INFORMAȚII": [
-    { label: "Despre noi", href: "/despre" },
-    { label: "Blog", href: "/blog" },
-    { label: "Politica de confidențialitate", href: "/confidentialitate" },
-    { label: "Termeni și condiții", href: "/termeni" },
-  ],
-  "SUPORT": [
-    { label: "Contact", href: "/contact" },
-    { label: "Întrebări frecvente", href: "/faq" },
-    { label: "Livrare și plată", href: "/contact" },
-    { label: "Retur produse", href: "/contact" },
-  ],
-  "CATEGORII": [
-    { label: "Condiționere rezidențiale", href: "/produse?cat=conditioane-rezidentiale" },
-    { label: "Condiționere comerciale", href: "/produse?cat=conditioane-comerciale" },
-    { label: "Sisteme multisplit", href: "/produse?cat=sisteme-multisplit" },
-    { label: "Accesorii & consumabile", href: "/produse?cat=accesorii-consumabile" },
-  ],
-};
-
 export default function Footer({ facebook, instagram, tiktok }: Partial<SocialLinks>) {
+  const t = useTranslations("footer");
+
+  const footerLinks = {
+    [t("info")]: [
+      { label: t("aboutUs"), href: "/despre" },
+      { label: t("blog"), href: "/blog" },
+      { label: t("privacy"), href: "/confidentialitate" },
+      { label: t("terms"), href: "/termeni" },
+    ],
+    [t("support")]: [
+      { label: t("contact"), href: "/contact" },
+      { label: t("faq"), href: "/faq" },
+      { label: t("delivery"), href: "/contact" },
+      { label: t("returns"), href: "/contact" },
+    ],
+    [t("categories")]: [
+      { label: t("residential"), href: "/produse?cat=conditioane-rezidentiale" },
+      { label: t("commercialCat"), href: "/produse?cat=conditioane-comerciale" },
+      { label: t("multisplitCat"), href: "/produse?cat=sisteme-multisplit" },
+      { label: t("accessoriesCat"), href: "/produse?cat=accesorii-consumabile" },
+    ],
+  };
+
   return (
     <footer className="bg-[#1d2353] text-white">
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -48,7 +53,7 @@ export default function Footer({ facebook, instagram, tiktok }: Partial<SocialLi
             </Link>
 
             <p className="text-white/60 text-sm leading-relaxed mb-6">
-              Climat Rapid este partenerul tău de încredere pentru soluții eficiente de climatizare.
+              {t("partner")}
             </p>
 
             {/* Social icons */}
@@ -121,10 +126,10 @@ export default function Footer({ facebook, instagram, tiktok }: Partial<SocialLi
           {/* Newsletter */}
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
-              Abonează-te la noutăți
+              {t("subscribe")}
             </h4>
             <p className="text-sm text-white/60 mb-4 leading-relaxed">
-              Fii la curent cu cele mai noi oferte și promoții.
+              {t("subscribeDesc")}
             </p>
             <NewsletterForm />
           </div>
@@ -135,7 +140,7 @@ export default function Footer({ facebook, instagram, tiktok }: Partial<SocialLi
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4 text-center text-xs text-white/40">
-          © {new Date().getFullYear()} Climat Rapid. Toate drepturile rezervate.
+          © {new Date().getFullYear()} Climat Rapid. {t("rights")}
         </div>
       </div>
     </footer>

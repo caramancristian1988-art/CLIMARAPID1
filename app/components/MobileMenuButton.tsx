@@ -2,31 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { SectionFlags } from "@/lib/siteSettings";
-
-const productsDropdown = [
-  { href: "/produse?cat=conditioane-rezidentiale", label: "Condiționere rezidențiale" },
-  { href: "/produse?cat=conditioane-comerciale", label: "Condiționere comerciale" },
-  { href: "/produse?cat=sisteme-multisplit", label: "Sisteme multisplit" },
-  { href: "/produse?cat=conditioane-portabile", label: "Condiționere portabile" },
-  { href: "/produse?cat=accesorii-consumabile", label: "Accesorii și consumabile" },
-];
-
-const servicesDropdown = [
-  { href: "/servicii/instalare", label: "Instalare" },
-  { href: "/servicii/mentenanta", label: "Mentenanță" },
-  { href: "/servicii/diagnosticare", label: "Diagnosticare & Reparații" },
-  { href: "/servicii/consultanta", label: "Consultanță" },
-  { href: "/servicii/multisplit", label: "Sisteme multisplit" },
-  { href: "/servicii/comerciale", label: "Sisteme comerciale HVAC" },
-];
-
-const baseNavLinks = [
-  { href: "/proiecte", label: "Proiecte", flag: "proiecteEnabled" as const },
-  { href: "/despre", label: "Despre noi", flag: "despreEnabled" as const },
-  { href: "/blog", label: "Blog", flag: "blogEnabled" as const },
-  { href: "/contact", label: "Contact", flag: "contactEnabled" as const },
-];
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -50,8 +27,32 @@ export default function MobileMenuButton({
   blogEnabled = true,
   contactEnabled = true,
 }: Partial<SectionFlags>) {
-  const flags = { produseEnabled, serviciiEnabled, proiecteEnabled, despreEnabled, blogEnabled, contactEnabled };
-  const navLinks = baseNavLinks.filter((l) => flags[l.flag]);
+  const t = useTranslations("nav");
+
+  const productsDropdown = [
+    { href: "/produse?cat=conditioane-rezidentiale", label: t("residential") },
+    { href: "/produse?cat=conditioane-comerciale", label: t("commercial") },
+    { href: "/produse?cat=sisteme-multisplit", label: t("multisplit") },
+    { href: "/produse?cat=conditioane-portabile", label: t("portable") },
+    { href: "/produse?cat=accesorii-consumabile", label: t("accessories") },
+  ];
+
+  const servicesDropdown = [
+    { href: "/servicii/instalare", label: t("installation") },
+    { href: "/servicii/mentenanta", label: t("maintenance") },
+    { href: "/servicii/diagnosticare", label: t("diagnostics") },
+    { href: "/servicii/consultanta", label: t("consulting") },
+    { href: "/servicii/multisplit", label: t("multisplitService") },
+    { href: "/servicii/comerciale", label: t("commercialService") },
+  ];
+
+  const baseNavLinks = [
+    { href: "/proiecte", label: t("projects"), enabled: proiecteEnabled },
+    { href: "/despre", label: t("about"), enabled: despreEnabled },
+    { href: "/blog", label: t("blog"), enabled: blogEnabled },
+    { href: "/contact", label: t("contact"), enabled: contactEnabled },
+  ].filter((l) => l.enabled);
+
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [produseOpen, setProduseOpen] = useState(false);
@@ -108,7 +109,7 @@ export default function MobileMenuButton({
       <button
         onClick={toggleMenu}
         className="relative flex items-center justify-center w-9 h-9 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-        aria-label="Meniu"
+        aria-label={t("menu")}
         aria-expanded={open}
       >
         <span className="relative flex flex-col items-center justify-center w-5 h-5 active:scale-90 transition-transform">
@@ -146,7 +147,6 @@ export default function MobileMenuButton({
             }`}
           >
             <div className="flex-1 overflow-y-auto">
-              {/* Nav */}
               <nav className="flex flex-col px-2 py-3">
                 {produseEnabled && (
                   <div
@@ -159,11 +159,11 @@ export default function MobileMenuButton({
                         onClick={closeMenu}
                         className="flex-1 px-3 py-3.5 text-[#1d2353] hover:text-[#c7092b] transition-colors text-[15px] font-bold"
                       >
-                        Produse
+                        {t("products")}
                       </Link>
                       <button
                         onClick={() => setProduseOpen((v) => !v)}
-                        aria-label="Arată categoriile de produse"
+                        aria-label={t("showProductCategories")}
                         className="px-3 py-3.5 text-[#1d2353] hover:text-[#c7092b] transition-colors"
                       >
                         <ChevronIcon open={produseOpen} />
@@ -197,11 +197,11 @@ export default function MobileMenuButton({
                         onClick={closeMenu}
                         className="flex-1 px-3 py-3.5 text-[#1d2353] hover:text-[#c7092b] transition-colors text-[15px] font-bold"
                       >
-                        Servicii
+                        {t("services")}
                       </Link>
                       <button
                         onClick={() => setServiciiOpen((v) => !v)}
-                        aria-label="Arată categoriile de servicii"
+                        aria-label={t("showServiceCategories")}
                         className="px-3 py-3.5 text-[#1d2353] hover:text-[#c7092b] transition-colors"
                       >
                         <ChevronIcon open={serviciiOpen} />
@@ -224,7 +224,7 @@ export default function MobileMenuButton({
                   </div>
                 )}
 
-                {navLinks.map((link, i) => (
+                {baseNavLinks.map((link, i) => (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -240,7 +240,6 @@ export default function MobileMenuButton({
               </nav>
             </div>
 
-            {/* Footer CTA */}
             <div className="px-5 py-4 border-t border-gray-100 shrink-0">
               <a
                 href="tel:+37369000000"

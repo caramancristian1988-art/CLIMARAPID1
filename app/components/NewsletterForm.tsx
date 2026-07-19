@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function NewsletterForm() {
+  const t = useTranslations("footer");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "exists">("idle");
 
@@ -35,7 +37,7 @@ export default function NewsletterForm() {
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
-        Te-ai abonat cu succes!
+        {t("subscribeSuccess")}
       </div>
     );
   }
@@ -46,7 +48,7 @@ export default function NewsletterForm() {
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        Ești deja abonat!
+        {t("alreadySubscribed")}
       </div>
     );
   }
@@ -57,7 +59,7 @@ export default function NewsletterForm() {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="Emailul tău"
+        placeholder={t("emailPlaceholder")}
         required
         className="w-full h-11 pl-4 pr-14 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:bg-white/15 transition-all"
       />
@@ -76,7 +78,7 @@ export default function NewsletterForm() {
         )}
       </button>
       {status === "error" && (
-        <p className="absolute -bottom-5 left-0 text-[11px] text-red-400">Eroare. Încearcă din nou.</p>
+        <p className="absolute -bottom-5 left-0 text-[11px] text-red-400">{t("subscribeError")}</p>
       )}
     </form>
   );

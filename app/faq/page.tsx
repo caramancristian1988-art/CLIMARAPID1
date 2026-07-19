@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import FaqAccordion, { type FaqItem } from "@/app/components/FaqAccordion";
 import JsonLd from "@/app/components/JsonLd";
@@ -38,7 +39,7 @@ async function getFaqs(): Promise<FaqItem[]> {
 }
 
 export default async function FaqPage() {
-  const faqs = await getFaqs();
+  const [faqs, t] = await Promise.all([getFaqs(), getTranslations("faq")]);
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -55,30 +56,30 @@ export default async function FaqPage() {
       <JsonLd data={faqSchema} />
       <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14">
         <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-6">
-          <Link href="/" className="hover:text-[#c7092b] transition-colors">Acasă</Link>
+          <Link href="/" className="hover:text-[#c7092b] transition-colors">{t("breadcrumbHome")}</Link>
           <span>›</span>
-          <span className="text-gray-600">Întrebări frecvente</span>
+          <span className="text-gray-600">{t("breadcrumbFaq")}</span>
         </nav>
 
-        <p className="text-[#c7092b] text-[11px] font-extrabold tracking-widest uppercase mb-3">Suport</p>
+        <p className="text-[#c7092b] text-[11px] font-extrabold tracking-widest uppercase mb-3">{t("badge")}</p>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1d2353] leading-tight mb-3">
-          Întrebări frecvente
+          {t("heading")}
         </h1>
         <p className="text-gray-500 text-[15px] leading-relaxed mb-10">
-          Găsești mai jos răspunsuri la cele mai comune întrebări. Dacă nu găsești ce cauți,{" "}
-          <Link href="/contact" className="text-[#c7092b] hover:underline">contactează-ne</Link>.
+          {t("desc")}{" "}
+          <Link href="/contact" className="text-[#c7092b] hover:underline">{t("contactLink")}</Link>.
         </p>
 
         <FaqAccordion faqs={faqs} />
 
         <div className="mt-12 bg-[#f8fafc] rounded-2xl p-6 text-center border border-gray-100">
-          <p className="font-bold text-[#1d2353] mb-1">Nu ai găsit răspunsul?</p>
-          <p className="text-sm text-gray-500 mb-4">Echipa noastră îți stă la dispoziție pentru orice întrebare.</p>
+          <p className="font-bold text-[#1d2353] mb-1">{t("notFound")}</p>
+          <p className="text-sm text-gray-500 mb-4">{t("notFoundDesc")}</p>
           <Link
             href="/contact"
             className="inline-flex items-center bg-[#c7092b] hover:bg-[#a5071f] text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm uppercase tracking-wide"
           >
-            Contactează-ne
+            {t("contactBtn")}
           </Link>
         </div>
       </div>

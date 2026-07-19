@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { GeistSans } from "geist/font/sans";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import { SiteHeader, SiteFooter, SiteFloatingContact, SiteDiscountPopup } from "./components/SiteChrome";
 import ScrollToTop from "./components/ScrollToTop";
@@ -57,11 +59,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [sectionFlags, headerCategories, socialLinks, contactInfo] = await Promise.all([
+  const [sectionFlags, headerCategories, socialLinks, contactInfo, locale, messages] = await Promise.all([
     getSectionFlags(),
     getHeaderCategories(),
     getSocialLinks(),
     getContactInfo(),
+    getLocale(),
+    getMessages(),
   ]);
 
   const orgJsonLd = {
@@ -106,28 +110,30 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="ro" className={GeistSans.variable}>
+    <html lang={locale} className={GeistSans.variable}>
       <body className="min-h-screen flex flex-col">
         <JsonLd data={orgJsonLd} />
-        <AuthProvider>
-          <AuthModalProvider>
-            <FavoritesProvider>
-              <CartProvider>
-                <Suspense fallback={null}>
-                  <ScrollToTop />
-                </Suspense>
-                <SiteHeader {...sectionFlags} {...contactInfo} categories={headerCategories} />
-                {children}
-                <SiteFooter {...socialLinks} />
-                <FloatingUIProvider>
-                  <SiteFloatingContact {...contactInfo} />
-                  <SiteDiscountPopup />
-                </FloatingUIProvider>
-                <AuthModal />
-              </CartProvider>
-            </FavoritesProvider>
-          </AuthModalProvider>
-        </AuthProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <AuthProvider>
+            <AuthModalProvider>
+              <FavoritesProvider>
+                <CartProvider>
+                  <Suspense fallback={null}>
+                    <ScrollToTop />
+                  </Suspense>
+                  <SiteHeader {...sectionFlags} {...contactInfo} categories={headerCategories} />
+                  {children}
+                  <SiteFooter {...socialLinks} />
+                  <FloatingUIProvider>
+                    <SiteFloatingContact {...contactInfo} />
+                    <SiteDiscountPopup />
+                  </FloatingUIProvider>
+                  <AuthModal />
+                </CartProvider>
+              </FavoritesProvider>
+            </AuthModalProvider>
+          </AuthProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

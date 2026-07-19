@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { SectionFlags, HeaderCategory } from "@/lib/siteSettings";
 import SearchBar from "./SearchBar";
 import MobileMenuButton from "./MobileMenuButton";
@@ -16,15 +19,6 @@ const fallbackProductsDropdown = [
   { id: "accesorii-consumabile", slug: "accesorii-consumabile", name: "Accesorii și consumabile", image: null },
 ];
 
-const servicesDropdown = [
-  { href: "/servicii/instalare", label: "Instalare" },
-  { href: "/servicii/mentenanta", label: "Mentenanță" },
-  { href: "/servicii/diagnosticare", label: "Diagnosticare & Reparații" },
-  { href: "/servicii/consultanta", label: "Consultanță" },
-  { href: "/servicii/multisplit", label: "Sisteme multisplit" },
-  { href: "/servicii/comerciale", label: "Sisteme comerciale HVAC" },
-];
-
 export default function StickyHeader({
   produseEnabled = true,
   serviciiEnabled = true,
@@ -34,7 +28,18 @@ export default function StickyHeader({
   contactEnabled = true,
   categories,
 }: Partial<SectionFlags> & { categories?: HeaderCategory[] }) {
+  const t = useTranslations("nav");
   const productsDropdown = categories && categories.length > 0 ? categories : fallbackProductsDropdown;
+
+  const servicesDropdown = [
+    { href: "/servicii/instalare", label: t("installation") },
+    { href: "/servicii/mentenanta", label: t("maintenance") },
+    { href: "/servicii/diagnosticare", label: t("diagnostics") },
+    { href: "/servicii/consultanta", label: t("consulting") },
+    { href: "/servicii/multisplit", label: t("multisplitService") },
+    { href: "/servicii/comerciale", label: t("commercialService") },
+  ];
+
   return (
     <div id="site-header" className="bg-white relative z-40">
 
@@ -58,13 +63,13 @@ export default function StickyHeader({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
                 </svg>
               </AccountMenuLink>
-              <Link href="/favorite" className="text-gray-600 hover:text-[#c7092b] transition-colors relative" aria-label="Favorite">
+              <Link href="/favorite" className="text-gray-600 hover:text-[#c7092b] transition-colors relative" aria-label={t("favorites")}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 <FavoritesBadge className="absolute -top-2 -right-2 w-4 h-4 bg-[#c7092b] rounded-full text-white text-[9px] font-bold flex items-center justify-center" />
               </Link>
-              <Link href="/cos" className="text-gray-600 relative" aria-label="Coș">
+              <Link href="/cos" className="text-gray-600 relative" aria-label={t("cart")}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
@@ -83,7 +88,7 @@ export default function StickyHeader({
           <div className="px-4 pb-3 flex items-center gap-2">
             {produseEnabled && (
               <AllCategoriesMenu
-                label="Categorii"
+                label={t("categories")}
                 className="shrink-0"
                 buttonClassName="flex items-center justify-center gap-1.5 bg-[#c7092b] hover:bg-[#a5071f] text-white text-xs font-bold px-3 h-11 rounded-xl transition-colors uppercase tracking-wide whitespace-nowrap"
                 categories={productsDropdown}
@@ -115,15 +120,15 @@ export default function StickyHeader({
               <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
               </svg>
-              <span className="hidden lg:block font-medium">Contul meu</span>
+              <span className="hidden lg:block font-medium">{t("myAccount")}</span>
             </AccountMenuLink>
-            <Link href="/favorite" className="text-gray-600 hover:text-[#c7092b] transition-colors relative" aria-label="Favorite">
+            <Link href="/favorite" className="text-gray-600 hover:text-[#c7092b] transition-colors relative" aria-label={t("favorites")}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
               <FavoritesBadge className="absolute -top-2 -right-2 w-5 h-5 bg-[#c7092b] rounded-full text-white text-[10px] font-bold flex items-center justify-center" />
             </Link>
-            <Link href="/cos" className="text-gray-600 hover:text-[#1d2353] transition-colors" aria-label="Coș">
+            <Link href="/cos" className="text-gray-600 hover:text-[#1d2353] transition-colors" aria-label={t("cart")}>
               <div className="relative">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -139,14 +144,14 @@ export default function StickyHeader({
       <div className="hidden lg:grid grid-cols-[320px_1fr_160px] gap-x-8 max-w-7xl mx-auto px-6 pr-4 border-b border-gray-200">
 
         <div className="flex items-center gap-10">
-          {produseEnabled && <AllCategoriesMenu categories={productsDropdown} />}
+          {produseEnabled && <AllCategoriesMenu label={t("allCategories")} categories={productsDropdown} />}
         </div>
 
         <div className="flex items-center gap-6">
           {produseEnabled && (
             <div className="relative group">
               <Link href="/produse" className="flex items-center gap-1 py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">
-                Produse
+                {t("products")}
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -164,7 +169,7 @@ export default function StickyHeader({
           {serviciiEnabled && (
             <div className="relative group">
               <Link href="/servicii" className="flex items-center gap-1 py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">
-                Servicii
+                {t("services")}
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -180,16 +185,16 @@ export default function StickyHeader({
           )}
 
           {proiecteEnabled && (
-            <Link href="/proiecte" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">Proiecte</Link>
+            <Link href="/proiecte" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">{t("projects")}</Link>
           )}
           {despreEnabled && (
-            <Link href="/despre" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">Despre noi</Link>
+            <Link href="/despre" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">{t("about")}</Link>
           )}
           {blogEnabled && (
-            <Link href="/blog" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">Blog</Link>
+            <Link href="/blog" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">{t("blog")}</Link>
           )}
           {contactEnabled && (
-            <Link href="/contact" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">Contact</Link>
+            <Link href="/contact" className="py-4 text-sm font-bold text-[#1d2353] hover:text-[#c7092b] transition-colors uppercase tracking-wide">{t("contact")}</Link>
           )}
         </div>
 

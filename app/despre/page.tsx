@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getSectionFlags } from "@/lib/siteSettings";
 
 export const revalidate = 3600;
@@ -21,23 +22,23 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.climatrapid.md/despre" },
 };
 
-const stats = [
-  { value: "10+", label: "Ani de experiență" },
-  { value: "2500+", label: "Clienți mulțumiți" },
-  { value: "3000+", label: "Produse vândute" },
-  { value: "1500+", label: "Instalări realizate" },
-];
-
 const team = [
-  { name: "Alexandru Popescu", role: "Director General", image: "/IMG_2945.PNG" },
-  { name: "Mihai Rotaru", role: "Responsabil Tehnic", image: "/IMG_2946.PNG" },
-  { name: "Ion Cebotari", role: "Tehnician Șef", image: "/IMG_2947.PNG" },
-  { name: "Vladimir Turcanu", role: "Consultant Vânzări", image: "/IMG_2948.PNG" },
+  { name: "Alexandru Popescu", roleKey: "role1" as const, image: "/IMG_2945.PNG" },
+  { name: "Mihai Rotaru", roleKey: "role2" as const, image: "/IMG_2946.PNG" },
+  { name: "Ion Cebotari", roleKey: "role3" as const, image: "/IMG_2947.PNG" },
+  { name: "Vladimir Turcanu", roleKey: "role4" as const, image: "/IMG_2948.PNG" },
 ];
 
 export default async function DesprePage() {
-  const { despreEnabled } = await getSectionFlags();
+  const [{ despreEnabled }, t] = await Promise.all([getSectionFlags(), getTranslations("about")]);
   if (!despreEnabled) notFound();
+
+  const stats = [
+    { value: "10+", label: t("stat1") },
+    { value: "2500+", label: t("stat2") },
+    { value: "3000+", label: t("stat3") },
+    { value: "1500+", label: t("stat4") },
+  ];
 
   return (
     <main className="bg-white">
@@ -53,46 +54,40 @@ export default async function DesprePage() {
             priority
             sizes="100vw"
           />
-          {/* Top gradient — covers only the title area, transparent below */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{ background: "linear-gradient(to bottom, white 0%, white 33%, rgba(255,255,255,0.25) 42%, transparent 50%)" }}
           />
 
-          {/* Title at top */}
           <div className="absolute inset-x-0 top-0 px-4 pt-4">
             <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-4">
-              <Link href="/" className="hover:text-[#c7092b] transition-colors">Acasă</Link>
+              <Link href="/" className="hover:text-[#c7092b] transition-colors">{t("breadcrumbHome")}</Link>
               <span>›</span>
-              <span className="text-gray-600">Despre noi</span>
+              <span className="text-gray-600">{t("breadcrumbAbout")}</span>
             </nav>
             <p className="text-[#c7092b] text-[11px] font-extrabold tracking-widest uppercase mb-3">
-              Despre Climat Rapid
+              {t("badge")}
             </p>
             <h1 className="text-3xl font-extrabold text-[#1d2353] leading-tight mb-4">
-              Confortul tău este{" "}
-              <span className="text-[#c7092b]">misiunea</span>{" "}
-              noastră.
+              {t("heading")}
             </h1>
             <div className="w-10 h-1 bg-[#c7092b] rounded-full" />
           </div>
 
-          {/* Bottom gradient — keeps the buttons readable over the photo */}
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
 
-          {/* CTAs anchored to bottom of hero — no card, no paragraph */}
           <div className="absolute inset-x-4 bottom-5 flex flex-col gap-2.5">
             <Link
               href="/produse"
               className="flex items-center justify-center h-12 bg-[#c7092b] hover:bg-[#a5071f] text-white font-bold rounded-xl transition-colors text-sm uppercase tracking-wide shadow-lg"
             >
-              Vezi produsele
+              {t("cta")}
             </Link>
             <Link
               href="/contact"
               className="flex items-center justify-center h-12 border-2 border-white bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-[#1d2353] font-bold rounded-xl transition-all text-sm uppercase tracking-wide shadow-lg"
             >
-              Contactează-ne
+              {t("cta")}
             </Link>
           </div>
         </section>
@@ -102,31 +97,28 @@ export default async function DesprePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[340px] lg:min-h-[380px] items-center gap-0 lg:gap-8 py-8 lg:py-0">
 
-              {/* LEFT */}
               <div className="relative z-10 pt-2 pb-6 lg:py-10">
                 <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-5">
-                  <Link href="/" className="hover:text-[#c7092b] transition-colors">Acasă</Link>
+                  <Link href="/" className="hover:text-[#c7092b] transition-colors">{t("breadcrumbHome")}</Link>
                   <span>›</span>
-                  <span className="text-gray-600">Despre noi</span>
+                  <span className="text-gray-600">{t("breadcrumbAbout")}</span>
                 </nav>
 
                 <p className="text-[#c7092b] text-[11px] font-extrabold tracking-widest uppercase mb-4">
-                  Despre Climat Rapid
+                  {t("badge")}
                 </p>
 
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1d2353] leading-tight mb-4">
-                  Confortul tău este{" "}
-                  <span className="text-[#c7092b]">misiunea</span>{" "}
-                  noastră.
+                  {t("heading")}
                 </h1>
 
                 <div className="w-10 h-1 bg-[#c7092b] rounded-full mb-6" />
 
+                <p className="text-gray-600 text-[15px] leading-relaxed mb-4 max-w-md">
+                  {t("desc1")}
+                </p>
                 <p className="text-gray-600 text-[15px] leading-relaxed mb-8 max-w-md">
-                  Suntem o companie din Moldova specializată în soluții complete de
-                  climatizare pentru locuințe și afaceri. De la consultanță și vânzare
-                  până la instalare și mentenanță, ne asigurăm că ai parte de confort
-                  în fiecare sezon.
+                  {t("desc2")}
                 </p>
 
                 <div className="flex flex-wrap gap-3">
@@ -134,18 +126,17 @@ export default async function DesprePage() {
                     href="/produse"
                     className="inline-flex items-center bg-[#c7092b] hover:bg-[#a5071f] text-white font-bold px-6 py-3 rounded-lg transition-colors text-sm uppercase tracking-wide"
                   >
-                    Vezi produsele
+                    {t("cta")}
                   </Link>
                   <Link
                     href="/contact"
                     className="inline-flex items-center border-2 border-[#1d2353] text-[#1d2353] hover:bg-[#1d2353] hover:text-white font-bold px-6 py-3 rounded-lg transition-all text-sm uppercase tracking-wide"
                   >
-                    Contactează-ne
+                    {t("cta")}
                   </Link>
                 </div>
               </div>
 
-              {/* RIGHT: Image */}
               <div className="relative z-20 w-full lg:mt-0 rounded-3xl lg:rounded-none overflow-hidden shadow-2xl lg:shadow-none lg:h-full lg:absolute lg:right-0 lg:top-0 lg:bottom-0 lg:w-[52%]" style={{ aspectRatio: "1719/915" }}>
                 <Image
                   src="/IMG_2935.PNG"
@@ -163,7 +154,6 @@ export default async function DesprePage() {
                   priority
                   sizes="52vw"
                 />
-                {/* Gradient overlay SVG */}
                 <div className="absolute inset-0 hidden lg:block pointer-events-none">
                   <svg width="520" height="520" viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 -translate-y-1/2 h-full w-auto" style={{left: "-180px"}}>
                     <circle cx="80" cy="260" r="360" fill="url(#grad)" />
@@ -175,53 +165,6 @@ export default async function DesprePage() {
                       </linearGradient>
                     </defs>
                   </svg>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* ── POVESTEA NOASTRĂ ── */}
-        <section className="py-10 lg:py-14 bg-white border-t border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
-
-              {/* TEXT — mobile: above image, desktop: right column */}
-              <div className="order-1 lg:order-2">
-                <p className="text-[#c7092b] text-[11px] font-extrabold tracking-widest uppercase mb-3">
-                  Povestea noastră
-                </p>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1d2353] leading-tight mb-6">
-                  Experiență, încredere și dedicare{" "}
-                  <span className="text-[#c7092b]">din 2014</span>
-                </h2>
-                <div className="space-y-4 text-gray-600 text-[15px] leading-relaxed">
-                  <p>
-                    Climat Rapid a apărut din dorința de a oferi clienților soluții de
-                    climatizare eficiente, fiabile și accesibile.
-                  </p>
-                  <p>
-                    De peste 10 ani, am crescut alături de clienții noștri și am
-                    dezvoltat parteneriate solide cu branduri internaționale de top.
-                  </p>
-                  <p>
-                    Fiecare proiect este tratat cu responsabilitate, iar fiecare client
-                    este un partener pe termen lung.
-                  </p>
-                </div>
-              </div>
-
-              {/* IMAGE — mobile: below text, desktop: left column */}
-              <div className="relative order-2 lg:order-1">
-                <div className="relative h-[220px] sm:h-[300px] lg:h-[360px] rounded-2xl overflow-hidden shadow-xl">
-                  <Image
-                    src="/IMG_2937.PNG"
-                    alt="Aparat de aer condiționat în living elegant"
-                    fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
                 </div>
               </div>
 
@@ -251,17 +194,15 @@ export default async function DesprePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10 lg:gap-16 items-start">
 
-              {/* LEFT: Title */}
               <div className="lg:pt-4">
                 <p className="text-[#c7092b] text-[11px] font-extrabold tracking-widest uppercase mb-3">
-                  Echipa noastră
+                  {t("teamTitle")}
                 </p>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1d2353] leading-tight">
-                  Profesioniști de încredere, la dispoziția ta
+                  {t("teamDesc")}
                 </h2>
               </div>
 
-              {/* RIGHT: Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {team.map((member) => (
                   <div
@@ -279,7 +220,7 @@ export default async function DesprePage() {
                     </div>
                     <div className="px-4 py-4 text-center">
                       <h3 className="font-extrabold text-[#1d2353] text-sm mb-1">{member.name}</h3>
-                      <p className="text-[#c7092b] text-[11px] font-semibold">{member.role}</p>
+                      <p className="text-[#c7092b] text-[11px] font-semibold">{t(member.roleKey)}</p>
                     </div>
                   </div>
                 ))}
@@ -295,12 +236,10 @@ export default async function DesprePage() {
             <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-2">
-                  Ai întrebări?{" "}
-                  <br className="hidden sm:block" />
-                  Suntem aici pentru tine!
+                  {t("whyTitle")}
                 </h2>
                 <p className="text-white/60 text-sm max-w-md">
-                  Echipa noastră îți stă la dispoziție pentru orice informații sau recomandări personalizate.
+                  {t("desc2")}
                 </p>
               </div>
               <div className="shrink-0">
@@ -308,7 +247,7 @@ export default async function DesprePage() {
                   href="/contact"
                   className="inline-flex items-center gap-2 bg-[#c7092b] hover:bg-[#a5071f] text-white font-extrabold text-sm px-8 py-4 rounded-xl transition-all duration-300 uppercase tracking-wide shadow-lg hover:-translate-y-0.5"
                 >
-                  Contactează-ne
+                  {t("cta")}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>

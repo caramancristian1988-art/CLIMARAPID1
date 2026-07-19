@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { fallbackProducts } from "@/lib/fallbackData";
 import { getSectionFlags, getContactInfo } from "@/lib/siteSettings";
@@ -66,12 +67,15 @@ async function getFaqs(): Promise<FaqItem[]> {
 }
 
 export default async function ContactPage() {
-  const { contactEnabled } = await getSectionFlags();
+  const [{ contactEnabled }, t, tFaq, products, faqs, { phone, phoneTel, phoneDigits, email }] = await Promise.all([
+    getSectionFlags(),
+    getTranslations("contact"),
+    getTranslations("faq"),
+    getRecommendedProducts(),
+    getFaqs(),
+    getContactInfo(),
+  ]);
   if (!contactEnabled) notFound();
-
-  const products = await getRecommendedProducts();
-  const faqs = await getFaqs();
-  const { phone, phoneTel, phoneDigits, email } = await getContactInfo();
 
   return (
     <div className="bg-white text-[#1B2A4A]">
@@ -83,21 +87,20 @@ export default async function ContactPage() {
             {/* LEFT */}
             <div className="relative z-10 pt-2 pb-6 lg:py-10">
               <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-5">
-                <Link href="/" className="hover:text-[#E31E24] transition-colors">Acasă</Link>
+                <Link href="/" className="hover:text-[#E31E24] transition-colors">{t("breadcrumbHome")}</Link>
                 <span>›</span>
-                <span className="text-[#1B2A4A] font-medium">Contact</span>
+                <span className="text-[#1B2A4A] font-medium">{t("breadcrumbContact")}</span>
               </nav>
               <p className="text-[#E31E24] text-xs font-bold tracking-widest uppercase mb-3">
-                CONTACT
+                {t("badge")}
               </p>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4">
-                Contactează{" "}
+                {t("heading")}{" "}
                 <span className="text-[#E31E24]">Climat Rapid</span>
               </h1>
               <div className="w-10 h-[3px] bg-[#E31E24] mb-5" />
               <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
-                Ai nevoie de ajutor pentru alegerea unui conditioner, instalare sau
-                mentenanță? Scrie-ne și revenim rapid cu o soluție potrivită.
+                {t("desc")}
               </p>
             </div>
 
@@ -114,12 +117,10 @@ export default async function ContactPage() {
                 priority
                 sizes="(max-width: 1024px) 100vw, 52vw"
               />
-              {/* Mobile top fade */}
               <div
                 className="absolute inset-x-0 top-0 h-16 lg:hidden pointer-events-none"
                 style={{ background: "linear-gradient(to bottom, white 0%, rgba(255,255,255,0.85) 30%, rgba(255,255,255,0.45) 60%, transparent 100%)" }}
               />
-              {/* Desktop left fade — blends the photo's light background into the page */}
               <div
                 className="absolute inset-0 hidden lg:block pointer-events-none"
                 style={{ background: "linear-gradient(to right, white 0%, rgba(255,255,255,0.7) 18%, rgba(255,255,255,0.15) 40%, transparent 60%)" }}
@@ -139,13 +140,13 @@ export default async function ContactPage() {
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
               </svg>
             </div>
-            <p className="font-bold text-sm">Telefon</p>
+            <p className="font-bold text-sm">{t("callUs")}</p>
             <p className="text-[#E31E24] font-bold text-sm">{phone}</p>
             <a
               href={`tel:${phoneTel}`}
               className="w-full border border-[#1B2A4A] text-[#1B2A4A] text-xs font-bold py-2.5 rounded hover:bg-[#1B2A4A] hover:text-white transition-colors"
             >
-              SUNĂ ACUM
+              {t("callUs").toUpperCase()}
             </a>
           </div>
 
@@ -163,7 +164,7 @@ export default async function ContactPage() {
               rel="noopener noreferrer"
               className="w-full border border-green-500 text-green-500 text-xs font-bold py-2.5 rounded hover:bg-green-500 hover:text-white transition-colors"
             >
-              SCRIE PE WHATSAPP
+              WhatsApp
             </a>
           </div>
 
@@ -179,7 +180,7 @@ export default async function ContactPage() {
               href={`viber://chat?number=${phoneDigits}`}
               className="w-full border border-purple-500 text-purple-500 text-xs font-bold py-2.5 rounded hover:bg-purple-500 hover:text-white transition-colors"
             >
-              SCRIE PE VIBER
+              Viber
             </a>
           </div>
 
@@ -190,14 +191,12 @@ export default async function ContactPage() {
               </svg>
             </div>
             <p className="font-bold text-sm">Email</p>
-            <p className="text-[#E31E24] font-bold text-xs">
-              {email}
-            </p>
+            <p className="text-[#E31E24] font-bold text-xs">{email}</p>
             <a
               href={`mailto:${email}`}
               className="w-full border border-[#1B2A4A] text-[#1B2A4A] text-xs font-bold py-2.5 rounded hover:bg-[#1B2A4A] hover:text-white transition-colors"
             >
-              TRIMITE EMAIL
+              {t("emailUs").toUpperCase()}
             </a>
           </div>
         </div>
@@ -206,13 +205,11 @@ export default async function ContactPage() {
       {/* Form + Sidebar */}
       <section className="max-w-7xl mx-auto px-4 pb-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Form */}
           <div className="md:col-span-2">
-            <h2 className="text-2xl font-bold mb-6">Trimite-ne un mesaj</h2>
+            <h2 className="text-2xl font-bold mb-6">{t("send")}</h2>
             <ContactForm />
           </div>
 
-          {/* Sidebar */}
           <div className="flex flex-col gap-4">
             <div className="border border-gray-200 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -221,7 +218,7 @@ export default async function ContactPage() {
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
                   </svg>
                 </div>
-                <p className="font-bold">Program</p>
+                <p className="font-bold">{t("scheduleLabel")}</p>
               </div>
               <div className="flex flex-col gap-1 text-sm text-gray-600">
                 <p>Luni - Vineri: 09:00 - 18:00</p>
@@ -239,17 +236,16 @@ export default async function ContactPage() {
                     <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
                   </svg>
                 </div>
-                <p className="font-bold">Suport clienți</p>
+                <p className="font-bold">{tFaq("badge")}</p>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Echipa noastră îți stă la dispoziție pentru orice întrebare
-                legată de produse, instalare sau service.
+                {tFaq("notFoundDesc")}
               </p>
               <Link
                 href="#faq"
                 className="text-[#E31E24] font-bold text-xs mt-4 block hover:underline"
               >
-                ÎNTREBĂRI FRECVENTE →
+                {tFaq("heading").toUpperCase()} →
               </Link>
             </div>
           </div>
@@ -258,12 +254,11 @@ export default async function ContactPage() {
 
       {/* FAQ */}
       <section id="faq" className="max-w-7xl mx-auto px-4 pb-14">
-        <h2 className="text-2xl font-bold mb-2">Întrebări frecvente</h2>
+        <h2 className="text-2xl font-bold mb-2">{tFaq("heading")}</h2>
         <div className="w-10 h-[3px] bg-[#E31E24] mb-6" />
         <FaqAccordion faqs={faqs} />
       </section>
 
-      {/* Recommended products */}
       <ProductsSection products={products} viewAllHref="/produse" />
     </div>
   );
