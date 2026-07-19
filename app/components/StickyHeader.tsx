@@ -101,7 +101,7 @@ export default function StickyHeader({
         </div>
 
         {/* DESKTOP layout */}
-        <div className="hidden lg:grid grid-cols-[320px_1fr_160px] gap-x-8 max-w-7xl mx-auto px-6 pr-3">
+        <div className="hidden lg:grid grid-cols-[320px_1fr_240px] gap-x-8 max-w-7xl mx-auto px-6 pr-3">
           <Link href="/" className="flex items-center gap-3 py-8 shrink-0">
             <div className="w-12 h-12 shrink-0">
               <Image src="/Untitled-2.png" alt="Climat Rapid logo" width={48} height={48} className="w-full h-full object-contain" priority />
@@ -141,7 +141,7 @@ export default function StickyHeader({
       </div>
 
       {/* ══ ROW 2: Navbar — desktop only ══ */}
-      <div className="hidden lg:grid grid-cols-[320px_1fr_160px] gap-x-8 max-w-7xl mx-auto px-6 pr-4 border-b border-gray-200">
+      <div className="hidden lg:grid grid-cols-[320px_1fr_240px] gap-x-8 max-w-7xl mx-auto px-6 pr-4 border-b border-gray-200">
 
         <div className="flex items-center gap-10">
           {produseEnabled && <AllCategoriesMenu label={t("allCategories")} categories={productsDropdown} />}
