@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import {
   fallbackCategories,
@@ -46,23 +47,30 @@ async function getData() {
 }
 
 export default async function HomePage() {
-  const { categories, products, popularProducts, offerProducts, reviews } = await getData();
+  const [{ categories, products, popularProducts, offerProducts, reviews }, t] = await Promise.all([
+    getData(),
+    getTranslations("home"),
+  ]);
 
   return (
     <main>
       <Hero />
       <CategoryGrid categories={categories} />
-      <ProductsSection products={products} />
+      <ProductsSection
+        products={products}
+        title={t("productsTitle")}
+        highlighted={t("recommended")}
+      />
       <ProductsSection
         products={popularProducts}
-        title="Produse"
-        highlighted="populare"
+        title={t("productsTitle")}
+        highlighted={t("popular")}
         viewAllHref="/produse?sort=rating"
       />
       <ProductsSection
         products={offerProducts}
-        title="Oferte"
-        highlighted="speciale"
+        title={t("offersTitle")}
+        highlighted={t("offersHighlighted")}
         viewAllHref="/produse?oferte=1"
       />
       <ServicesSection />

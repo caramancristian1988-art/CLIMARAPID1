@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import FavoriteButton from "./FavoriteButton";
 import AddToCartButton from "./AddToCartButton";
 
@@ -57,6 +58,8 @@ export default function ProductCard({
   installmentsEnabled,
   installmentMonths = 4,
 }: ProductCardProps) {
+  const t = useTranslations("product");
+
   const discount = oldPrice ? Math.round((1 - price / oldPrice) * 100) : null;
   const discountAmount = oldPrice ? Math.round(oldPrice - price) : null;
   const displayBadge = badge ?? (discount ? `-${discount}%` : null);
@@ -64,7 +67,7 @@ export default function ProductCard({
   const specs = [
     btu ? `${(btu / 1000).toFixed(0)}000 BTU` : null,
     technology || null,
-    energyClass ? `Clasa ${energyClass}` : null,
+    energyClass ? `${t("class")} ${energyClass}` : null,
   ]
     .filter(Boolean)
     .join(", ");
@@ -102,7 +105,6 @@ export default function ProductCard({
             product={{ slug, name, price, oldPrice, image, btu, technology, energyClass, rating, reviewCount, badge }}
           />
         </div>
-
       </div>
 
       {/* Content */}
@@ -125,7 +127,7 @@ export default function ProductCard({
           <span className="text-sm text-gray-500">({reviewCount})</span>
         </div>
 
-        {/* Price + actions — pinned to bottom */}
+        {/* Price + actions */}
         <div className="mt-auto">
           <div className="mb-2">
             {oldPrice && discount && (
@@ -149,10 +151,10 @@ export default function ProductCard({
           {installmentsEnabled !== false && (
             <div className="inline-flex items-center gap-1.5 bg-[#eef1fb] rounded-full px-2.5 py-1 mb-3">
               <span className="bg-[#1d2353] text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wide">
-                Rate
+                {t("rate")}
               </span>
               <span className="text-[10px] font-bold text-[#1d2353]">
-                de la {Math.ceil(price / installmentMonths).toLocaleString("ro-MD")} lei/lună
+                {t("from")} {Math.ceil(price / installmentMonths).toLocaleString("ro-MD")} {t("perMonth")}
               </span>
             </div>
           )}
@@ -169,7 +171,7 @@ export default function ProductCard({
               <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span className="hidden sm:inline">Adaugă în coș</span>
+              <span className="hidden sm:inline">{t("addToCart")}</span>
             </AddToCartButton>
             <button
               onClick={() => { window.location.href = `/produse/${slug}`; }}

@@ -69,6 +69,58 @@
     "benefit3Title": "Garanție și suport",
     "benefit3Desc": "Asistență rapidă și garanție extinsă"
   },
+  "trustbar": {
+    "shipping": "TRANSPORT GRATUIT",
+    "shippingDesc": "Pentru comenzi peste 1500 MDL",
+    "payment": "PLATĂ SECURIZATĂ",
+    "paymentDesc": "Plăți online 100% sigure",
+    "returns": "RETUR 14 ZILE",
+    "returnsDesc": "Drept de retur fără griji",
+    "support": "SUPORT DEDICAT",
+    "supportDesc": "Suntem aici să te ajutăm"
+  },
+  "servicesSection": {
+    "badge": "Servicii profesionale",
+    "title": "Instalare &",
+    "titleHighlighted": "Mentenanță",
+    "desc": "Echipa noastră de specialiști îți oferă servicii complete de instalare, întreținere și reparații pentru sistemele tale de climatizare.",
+    "viewServices": "Vezi serviciile",
+    "s1": "Instalare rapidă și sigură",
+    "s2": "Mentenanță periodică",
+    "s3": "Diagnosticare & Reparații",
+    "s4": "Garanție pentru lucrări"
+  },
+  "categoryGrid": {
+    "heading": "Categorii",
+    "headingHighlighted": "populare",
+    "viewAll": "Vezi toate categoriile",
+    "residential": "Pentru confortul casei tale",
+    "commercial": "Soluții pentru spații mari",
+    "multisplit": "Conectează până la 5 unități",
+    "portable": "Flexibile și ușor de mutat",
+    "accessories": "Tot ce ai nevoie pentru instalare"
+  },
+  "product": {
+    "addToCart": "Adaugă în coș",
+    "viewAll": "Vezi toate produsele",
+    "rate": "Rate",
+    "from": "de la",
+    "perMonth": "lei/lună",
+    "class": "Clasa"
+  },
+  "home": {
+    "recommended": "recomandate",
+    "popular": "populare",
+    "offersTitle": "Oferte",
+    "offersHighlighted": "speciale",
+    "productsTitle": "Produse",
+    "reviews": "Ce spun clienții noștri",
+    "reviewsDesc": "Peste 500 de clienți mulțumiți în Moldova"
+  },
+  "reviews": {
+    "heading": "Ce spun clienții noștri",
+    "desc": "Peste 500 de clienți mulțumiți în Moldova"
+  },
   "common": {
     "requestOffer": "Solicită ofertă",
     "addToCart": "Adaugă în coș",
