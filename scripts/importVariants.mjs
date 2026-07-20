@@ -92,11 +92,10 @@ const GROUP_RULES = {
   "AMBER|12":   { slug: "gree-amber" },
   "SOYAL|13":   { slug: "gree-soyal" },
   "LOMO|15":    { slug: "gree-lomo" },
-  "FREE-MATCH|16": { slug: "gree-free-match", labelSuffix: " (casetă)" },
-  "FREE-MATCH|17": { slug: "gree-free-match", useBtuLabel: true, labelSuffix: " (exterior)" },
-  "U-Match Standard|18": { slug: "gree-u-match-standard", labelSuffix: " (duct)" },
-  "U-Match Standard|19": { slug: "gree-u-match-standard", labelSuffix: " (duct PS)" },
-  "U-Match Standard|20": { slug: "gree-u-match-standard", labelSuffix: " (tavan-podea)" },
+  "FREE-MATCH|16": { slug: "gree-free-match" },        // cassette interior — main product
+  // FREE-MATCH|17 (exterior multi-split) excluded: separate component, confuses variants
+  "U-Match Standard|18": { slug: "gree-u-match-standard" }, // duct standard — main type
+  // U-Match Standard|19 (duct PS) and |20 (tavan-podea) excluded: separate product types
   "GENTLE|P1":  { slug: "platinium-gentle" },
   "NORDIC|P2":  { slug: "platinium-nordic" },
   "Kyato|P3":   { slug: "kyato" },
