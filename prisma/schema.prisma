@@ -53,18 +53,25 @@ model Product {
 }
 
 model ProductVariant {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId    String   @db.ObjectId
-  product      Product  @relation(fields: [productId], references: [id])
-  label        String
-  btu          Int?
-  surface      Int?
-  price        Float
-  oldPrice     Float?
-  badge        String?
-  order        Int      @default(0)
-  availability String   @default("În stoc")
-  createdAt    DateTime @default(now())
+  id             String              @id @default(auto()) @map("_id") @db.ObjectId
+  productId      String              @db.ObjectId
+  product        Product             @relation(fields: [productId], references: [id])
+  label          String
+  btu            Int?
+  surface        Int?
+  price          Float
+  oldPrice       Float?
+  badge          String?
+  isDefault      Boolean             @default(false)
+  order          Int                 @default(0)
+  availability   String              @default("În stoc")
+  specifications ProductVariantSpec[]
+  createdAt      DateTime            @default(now())
+}
+
+type ProductVariantSpec {
+  label String
+  value String
 }
 
 type ProductSpec {

@@ -43,13 +43,27 @@ const allFallbackProducts = [
   ...fallbackPopularProducts,
   ...fallbackOfferProducts,
   ...fallbackDiscountProducts,
-].map((p) => ({ ...p, images: [] as string[], brand: null as string | null }));
+].map((p) => ({
+  ...p,
+  images: [] as string[],
+  brand: null as string | null,
+  variants: [] as { id: string; label: string; price: number; oldPrice: number | null; badge: string | null; isDefault: boolean }[],
+}));
 
 const getCategoryData = cache(async (slug: string) => {
   try {
     const category = await prisma.category.findUnique({ where: { slug } });
     if (!category) return null;
-    const products = await prisma.product.findMany({ where: { categoryId: category.id }, orderBy: { createdAt: "desc" } });
+    const products = await prisma.product.findMany({
+      where: { categoryId: category.id },
+      orderBy: { createdAt: "desc" },
+      include: {
+        variants: {
+          select: { id: true, label: true, price: true, oldPrice: true, badge: true, isDefault: true },
+          orderBy: { order: "asc" },
+        },
+      },
+    });
     return { category, products };
   } catch {
     const category = fallbackCategories.find((c) => c.slug === slug);
@@ -75,7 +89,10 @@ const getProductData = cache(async (slug: string) => {
     try {
       [faqs, variants] = await Promise.all([
         prisma.productFaq.findMany({ where: { productId: product.id }, orderBy: { order: "asc" } }),
-        prisma.productVariant.findMany({ where: { productId: product.id }, orderBy: { order: "asc" } }),
+        prisma.productVariant.findMany({
+          where: { productId: product.id },
+          orderBy: { order: "asc" },
+        }),
       ]);
     } catch {
       faqs = [];
@@ -264,6 +281,7 @@ interface CategoryViewProps {
     badge: string | null;
     installmentsEnabled?: boolean;
     createdAt: Date;
+    variants: Array<{ id: string; label: string; price: number; oldPrice: number | null; badge: string | null; isDefault: boolean }>;
   }>;
   sort: ReturnType<typeof parseSort>;
   page: number;
@@ -377,6 +395,7 @@ function CategoryView({ category, products: baseProducts, sort, page, filters, r
                       name={localProductNames[product.slug] ?? product.name}
                       image={localProductImages[product.slug] ?? product.image}
                       badge={localProductBadges[product.slug] ?? product.badge}
+                      variants={product.variants}
                       showDiscount={filters.offersOnly}
                       installmentsEnabled={ratesEnabled && product.installmentsEnabled !== false}
                       installmentMonths={installmentMonths}
@@ -479,7 +498,9 @@ interface ProductViewProps {
     price: number;
     oldPrice: number | null;
     badge: string | null;
+    isDefault: boolean;
     availability: string;
+    specifications: { label: string; value: string }[];
   }>;
   ratesEnabled: boolean;
   installmentMonths: number;
@@ -668,23 +689,8 @@ async function ProductView({ product, category, related, reviews, faqs, variants
             <ProductGallery images={galleryImages} alt={displayName} badge={displayBadge} />
           </div>
 
-          {/* Right column: quick specs → price box → delivery info, stacked */}
+          {/* Right column: buy box (includes specs + variant selector) → delivery info */}
           <div className="flex flex-col gap-6">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-extrabold uppercase tracking-wide text-[#1d2353]">Caracteristici tehnice</p>
-                <span className={`text-xs font-bold flex items-center gap-1.5 ${inStock ? "text-green-600" : "text-gray-400"}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${inStock ? "bg-green-500" : "bg-gray-400"}`} />
-                  {product.availability}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2.5">
-                {topPanelSpecs.map((spec, i) => (
-                  <QuickSpecRow key={`${spec.label}-${i}`} label={spec.label} value={spec.value} />
-                ))}
-              </div>
-            </div>
-
             {product.description && (
               <p className="text-gray-600 text-[15px] leading-relaxed">
                 {product.description}
@@ -704,6 +710,7 @@ async function ProductView({ product, category, related, reviews, faqs, variants
               basePrice={product.price}
               baseOldPrice={product.oldPrice ?? null}
               baseAvailability={product.availability}
+              baseSpecs={topPanelSpecs}
               installmentsEnabled={installmentsEnabled}
               installmentMonths={installmentMonths}
             />

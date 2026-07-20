@@ -12,7 +12,9 @@ export interface ProductVariantData {
   price: number;
   oldPrice: number | null;
   badge: string | null;
+  isDefault: boolean;
   availability: string;
+  specifications: { label: string; value: string }[];
 }
 
 interface Props {
@@ -24,8 +26,18 @@ interface Props {
   basePrice: number;
   baseOldPrice: number | null;
   baseAvailability: string;
+  baseSpecs: { label: string; value: string }[];
   installmentsEnabled: boolean;
   installmentMonths: number;
+}
+
+function SpecRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-4 py-1.5 border-b border-gray-50 last:border-0">
+      <span className="text-xs text-gray-500 shrink-0">{label}</span>
+      <span className="text-xs font-bold text-[#1d2353] text-right">{value}</span>
+    </div>
+  );
 }
 
 export default function ProductBuyBox({
@@ -37,11 +49,17 @@ export default function ProductBuyBox({
   basePrice,
   baseOldPrice,
   baseAvailability,
+  baseSpecs,
   installmentsEnabled,
   installmentMonths,
 }: Props) {
   const hasVariants = variants.length > 0;
-  const [selectedIdx, setSelectedIdx] = useState<number | null>(hasVariants ? 0 : null);
+
+  const defaultIdx = hasVariants
+    ? Math.max(0, variants.findIndex((v) => v.isDefault))
+    : null;
+
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(defaultIdx);
 
   const selected = selectedIdx !== null ? variants[selectedIdx] : null;
   const price = selected?.price ?? basePrice;
@@ -53,8 +71,40 @@ export default function ProductBuyBox({
   const variantLabel = selected?.label;
   const cartName = variantLabel ? `${productName} — ${variantLabel}` : productName;
 
+  const activeSpecs =
+    selected && selected.specifications.length > 0 ? selected.specifications : baseSpecs;
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
+      {/* Specs section — reactive */}
+      {activeSpecs.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-extrabold uppercase tracking-wide text-[#1d2353]">
+              Caracteristici tehnice
+            </p>
+            <span
+              className={`text-xs font-bold flex items-center gap-1.5 ${
+                inStock ? "text-green-600" : "text-gray-400"
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  inStock ? "bg-green-500" : "bg-gray-400"
+                }`}
+              />
+              {availability}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            {activeSpecs.map((spec, i) => (
+              <SpecRow key={`${spec.label}-${i}`} label={spec.label} value={spec.value} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Variant selector */}
       {hasVariants && (
         <div>
           <p className="text-xs font-extrabold uppercase tracking-wide text-[#1d2353] mb-3">
@@ -63,25 +113,31 @@ export default function ProductBuyBox({
           <div className="flex flex-wrap gap-2">
             {variants.map((v, i) => {
               const isSelected = selectedIdx === i;
-              const vDiscount = v.oldPrice && v.oldPrice > v.price
-                ? Math.round((1 - v.price / v.oldPrice) * 100)
-                : null;
+              const vDiscount =
+                v.oldPrice && v.oldPrice > v.price
+                  ? Math.round((1 - v.price / v.oldPrice) * 100)
+                  : null;
+              const pillBadge = v.badge ?? (vDiscount ? `-${vDiscount}%` : null);
               return (
                 <button
                   key={v.id}
                   onClick={() => setSelectedIdx(i)}
-                  className={`relative flex flex-col items-center min-w-[80px] px-4 py-2.5 rounded-xl border-2 transition-all duration-150 text-left ${
+                  className={`relative flex flex-col items-center min-w-[76px] px-3.5 py-2.5 rounded-xl border-2 transition-all duration-150 ${
                     isSelected
                       ? "border-[#c7092b] bg-[#fdf2f3]"
                       : "border-gray-200 bg-white hover:border-gray-300"
                   }`}
                 >
-                  {(v.badge ?? (vDiscount ? `-${vDiscount}%` : null)) && (
+                  {pillBadge && (
                     <span className="absolute -top-2 -right-2 bg-[#c7092b] text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-md leading-tight">
-                      {v.badge ?? `-${vDiscount}%`}
+                      {pillBadge}
                     </span>
                   )}
-                  <span className={`text-sm font-extrabold leading-tight ${isSelected ? "text-[#c7092b]" : "text-[#1d2353]"}`}>
+                  <span
+                    className={`text-sm font-extrabold leading-tight ${
+                      isSelected ? "text-[#c7092b]" : "text-[#1d2353]"
+                    }`}
+                  >
                     {v.label}
                   </span>
                   <span className="text-[11px] text-gray-500 font-medium mt-0.5 whitespace-nowrap">
@@ -94,6 +150,7 @@ export default function ProductBuyBox({
         </div>
       )}
 
+      {/* Price + buy */}
       <div className="border border-gray-100 rounded-2xl p-5">
         <div className="mb-1">
           {oldPrice && discount && (
@@ -120,7 +177,8 @@ export default function ProductBuyBox({
               Rate
             </span>
             <span className="text-xs font-bold text-[#1d2353]">
-              în {installmentMonths} luni, de la {Math.ceil(price / installmentMonths).toLocaleString("ro-MD")} lei/lună
+              în {installmentMonths} luni, de la{" "}
+              {Math.ceil(price / installmentMonths).toLocaleString("ro-MD")} lei/lună
             </span>
           </div>
         )}
@@ -140,8 +198,18 @@ export default function ProductBuyBox({
                 : "bg-gray-100 text-gray-400 cursor-not-allowed"
             }`}
           >
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            <svg
+              className="w-4 h-4 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
             </svg>
             {inStock ? "Adaugă în coș" : "Stoc epuizat"}
           </AddToCartButton>
@@ -173,7 +241,11 @@ export default function ProductBuyBox({
             strokeWidth={2}
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <span className="relative">
             Cere consultație

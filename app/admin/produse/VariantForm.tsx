@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { AdminInput } from "../components/AdminField";
+import SpecificationsEditor from "../components/SpecificationsEditor";
 import type { VariantFormState } from "@/lib/adminProductVariantActions";
 
 interface VariantDefaults {
@@ -14,6 +15,8 @@ interface VariantDefaults {
   badge?: string | null;
   order?: number;
   availability?: string;
+  isDefault?: boolean;
+  specifications?: { label: string; value: string }[];
 }
 
 const initialState: VariantFormState = {};
@@ -109,6 +112,26 @@ export default function VariantForm({
           <option value="Stoc epuizat">Stoc epuizat</option>
           <option value="La comandă">La comandă</option>
         </select>
+      </div>
+
+      <label className="flex items-center gap-2 text-sm font-bold text-gray-600">
+        <input
+          type="checkbox"
+          name="isDefault"
+          defaultChecked={defaults?.isDefault ?? false}
+          className="w-4 h-4 accent-[#c7092b]"
+        />
+        Variantă implicită (selectată automat pe pagina produsului)
+      </label>
+
+      <div className="border-t border-gray-100 pt-4">
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+          Specificații tehnice pentru această variantă (opțional)
+        </p>
+        <p className="text-xs text-gray-400 mb-3">
+          Dacă completezi, înlocuiesc specificațiile produsului de bază când e selectată această variantă.
+        </p>
+        <SpecificationsEditor defaultValue={defaults?.specifications} />
       </div>
 
       <button
