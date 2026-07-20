@@ -7,6 +7,7 @@ import CopyableId from "../../components/CopyableId";
 import ProductForm from "../ProductForm";
 import { updateProductAction } from "@/lib/adminProductActions";
 import { deleteProductFaqAction } from "@/lib/adminProductFaqActions";
+import { deleteVariantAction } from "@/lib/adminProductVariantActions";
 import { createAdminReviewAction, deleteAdminReviewAction } from "@/lib/adminReviewActions";
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -21,14 +22,17 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
   let faqs: Awaited<ReturnType<typeof prisma.productFaq.findMany>> = [];
   let productReviews: Awaited<ReturnType<typeof prisma.review.findMany>> = [];
+  let variants: Awaited<ReturnType<typeof prisma.productVariant.findMany>> = [];
   try {
-    [faqs, productReviews] = await Promise.all([
+    [faqs, productReviews, variants] = await Promise.all([
       prisma.productFaq.findMany({ where: { productId: id }, orderBy: { order: "asc" } }),
       prisma.review.findMany({ where: { product: product.name }, orderBy: { createdAt: "desc" } }),
+      prisma.productVariant.findMany({ where: { productId: id }, orderBy: { order: "asc" } }),
     ]);
   } catch {
     faqs = [];
     productReviews = [];
+    variants = [];
   }
 
   return (
@@ -53,6 +57,65 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         }
       />
       <ProductForm action={updateProductAction} defaults={product} categories={categories} brands={brands} submitLabel="Salvează modificările" />
+
+      {/* Variants section */}
+      <div className="mt-8">
+        <AdminPageHeader
+          title="Variante BTU / m²"
+          description="Dacă un model are mai multe capacități (9000, 12000 BTU...), adaugă fiecare ca variantă. Clientul le va selecta pe pagina produsului."
+          action={
+            <Link
+              href={`/admin/produse/${product.id}/variante/nou`}
+              className="inline-flex items-center gap-2 bg-[#c7092b] hover:bg-[#a5071f] text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm uppercase tracking-wide"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Adaugă variantă
+            </Link>
+          }
+        />
+
+        {variants.length === 0 ? (
+          <div className="bg-white border border-gray-100 rounded-2xl p-10 text-center text-gray-500 max-w-xl">
+            Nicio variantă adăugată. Dacă produsul are o singură configurație, nu e necesar.
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden max-w-xl">
+            <div className="divide-y divide-gray-100">
+              {variants.map((v) => (
+                <div key={v.id} className="flex items-center gap-4 p-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm text-[#1d2353]">
+                      {v.label}
+                      {v.surface && <span className="ml-1 text-gray-400 font-normal">({v.surface} m²)</span>}
+                      {v.btu && <span className="ml-1 text-gray-400 font-normal">/ {v.btu.toLocaleString()} BTU</span>}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {v.price.toLocaleString("ro-MD")} MDL
+                      {v.oldPrice && ` (vechi: ${v.oldPrice.toLocaleString("ro-MD")} MDL)`}
+                      {v.badge && ` · ${v.badge}`}
+                      {" · "}{v.availability}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Link
+                      href={`/admin/produse/${product.id}/variante/${v.id}`}
+                      className="text-gray-400 hover:text-[#c7092b] transition-colors p-1.5 rounded-lg hover:bg-[#fdf2f3]"
+                      aria-label="Editează"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-9.5a2.121 2.121 0 113 3L12 13l-4 1 1-4 8.5-8.5z" />
+                      </svg>
+                    </Link>
+                    <DeleteButton action={deleteVariantAction} id={v.id} confirmText="Sigur vrei să ștergi această variantă?" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="mt-8">
         <AdminPageHeader

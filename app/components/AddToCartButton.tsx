@@ -10,17 +10,18 @@ interface Props {
   oldPrice?: number | null;
   image: string | null;
   inStock?: boolean;
+  variantLabel?: string;
   className: string;
   children: React.ReactNode;
 }
 
-export default function AddToCartButton({ slug, name, price, oldPrice = null, image, inStock = true, className, children }: Props) {
+export default function AddToCartButton({ slug, name, price, oldPrice = null, image, inStock = true, variantLabel, className, children }: Props) {
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
   const [bump, setBump] = useState(0);
 
   function handleClick() {
-    addToCart({ slug, name, price, oldPrice, image });
+    addToCart({ slug, name, price, oldPrice, image, variantLabel });
     setAdded(true);
     setBump((b) => b + 1);
     setTimeout(() => setAdded(false), 1500);

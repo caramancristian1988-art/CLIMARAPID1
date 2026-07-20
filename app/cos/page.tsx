@@ -35,7 +35,7 @@ export default function CosPage() {
               <div className="flex flex-col gap-4">
                 {items.map((item) => (
                   <div
-                    key={item.slug}
+                    key={item.cartKey}
                     className="flex flex-col sm:flex-row sm:items-center gap-4 border border-gray-100 rounded-2xl p-4"
                   >
                     <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -74,7 +74,7 @@ export default function CosPage() {
                     <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6">
                       <div className="flex items-center gap-2 border border-gray-200 rounded-lg shrink-0">
                         <button
-                          onClick={() => updateQuantity(item.slug, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.cartKey, item.quantity - 1)}
                           disabled={item.quantity <= 1}
                           className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#c7092b] disabled:text-gray-300 transition-colors"
                           aria-label="Scade cantitatea"
@@ -83,7 +83,7 @@ export default function CosPage() {
                         </button>
                         <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.slug, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.cartKey, item.quantity + 1)}
                           className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#c7092b] transition-colors"
                           aria-label="Crește cantitatea"
                         >
@@ -97,7 +97,7 @@ export default function CosPage() {
                         </p>
 
                         <button
-                          onClick={() => removeFromCart(item.slug)}
+                          onClick={() => removeFromCart(item.cartKey)}
                           aria-label="Elimină din coș"
                           className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-[#c7092b] hover:bg-gray-50 rounded-lg transition-colors shrink-0"
                         >
