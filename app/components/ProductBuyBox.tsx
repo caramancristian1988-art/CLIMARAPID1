@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddToCartButton from "./AddToCartButton";
 import ProductOfferModal from "./ProductOfferModal";
 
@@ -31,14 +31,6 @@ interface Props {
   installmentMonths: number;
 }
 
-function SpecRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 py-1.5 border-b border-gray-50 last:border-0">
-      <span className="text-xs text-gray-500 shrink-0">{label}</span>
-      <span className="text-xs font-bold text-[#1d2353] text-right">{value}</span>
-    </div>
-  );
-}
 
 export default function ProductBuyBox({
   variants,
@@ -74,37 +66,16 @@ export default function ProductBuyBox({
   const activeSpecs =
     selected && selected.specifications.length > 0 ? selected.specifications : baseSpecs;
 
+  // Broadcast active specs to ProductVariantSpecs (below the fold)
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("product-variant-specs", { detail: { specs: activeSpecs } })
+    );
+  }, [selectedIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className="flex flex-col gap-5">
-      {/* Specs section — reactive */}
-      {activeSpecs.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-extrabold uppercase tracking-wide text-[#1d2353]">
-              Caracteristici tehnice
-            </p>
-            <span
-              className={`text-xs font-bold flex items-center gap-1.5 ${
-                inStock ? "text-green-600" : "text-gray-400"
-              }`}
-            >
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  inStock ? "bg-green-500" : "bg-gray-400"
-                }`}
-              />
-              {availability}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            {activeSpecs.map((spec, i) => (
-              <SpecRow key={`${spec.label}-${i}`} label={spec.label} value={spec.value} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Variant selector */}
+      {/* Variant selector — first so user selects before buying */}
       {hasVariants && (
         <div>
           <p className="text-xs font-extrabold uppercase tracking-wide text-[#1d2353] mb-3">

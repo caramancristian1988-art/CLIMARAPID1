@@ -27,6 +27,7 @@ import ProductCard from "../../components/ProductCard";
 import LoadMoreButton from "../../components/LoadMoreButton";
 import AddToCartButton from "../../components/AddToCartButton";
 import ProductBuyBox from "../../components/ProductBuyBox";
+import ProductVariantSpecs from "../../components/ProductVariantSpecs";
 import ProductGallery from "../../components/ProductGallery";
 import FavoriteButton from "../../components/FavoriteButton";
 import ProductFilterSidebar from "../../components/ProductFilterSidebar";
@@ -541,6 +542,10 @@ async function ProductView({ product, category, related, reviews, faqs, variants
     ...(product.specifications ?? []).slice(0, extraTopSpecsNeeded),
   ];
   const installmentsEnabled = ratesEnabled && product.installmentsEnabled !== false;
+
+  // Default variant's technical specs for the reactive specs section below the fold
+  const defaultVariant = variants.find((v) => v.isDefault) ?? variants[0] ?? null;
+  const defaultVariantSpecs = defaultVariant?.specifications ?? [];
   const galleryImages = product.images && product.images.length > 0
     ? product.images
     : displayImage
@@ -743,27 +748,15 @@ async function ProductView({ product, category, related, reviews, faqs, variants
       </section>
 
       {/* Full specs */}
-      {(specs.length > 0 || (product.specifications && product.specifications.length > 0)) && (
+      {(specs.length > 0 || defaultVariantSpecs.length > 0) && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pb-12">
           <h2 className="text-2xl font-extrabold text-[#1d2353] mb-6">Caracteristici</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="border border-gray-100 rounded-2xl overflow-hidden">
-              <div className="bg-[#f6f8fb] px-5 py-3 text-sm font-extrabold text-[#1d2353]">Informații generale</div>
-              {specs.map((spec, i) => (
-                <div
-                  key={`${spec.label}-${i}`}
-                  className={`flex items-center justify-between px-5 py-3 border-t border-gray-100 ${i % 2 === 1 ? "bg-[#fafbfc]" : ""}`}
-                >
-                  <span className="text-sm text-gray-500">{spec.label}</span>
-                  <span className="text-sm font-bold text-[#1d2353] text-right">{spec.value}</span>
-                </div>
-              ))}
-            </div>
-
-            {product.specifications && product.specifications.length > 0 && (
+          <div className="flex flex-col gap-6">
+            {/* Informații generale — static */}
+            {specs.length > 0 && (
               <div className="border border-gray-100 rounded-2xl overflow-hidden">
-                <div className="bg-[#f6f8fb] px-5 py-3 text-sm font-extrabold text-[#1d2353]">Specificații tehnice</div>
-                {product.specifications.map((spec, i) => (
+                <div className="bg-[#f6f8fb] px-5 py-3 text-sm font-extrabold text-[#1d2353]">Informații generale</div>
+                {specs.map((spec, i) => (
                   <div
                     key={`${spec.label}-${i}`}
                     className={`flex items-center justify-between px-5 py-3 border-t border-gray-100 ${i % 2 === 1 ? "bg-[#fafbfc]" : ""}`}
@@ -773,6 +766,11 @@ async function ProductView({ product, category, related, reviews, faqs, variants
                   </div>
                 ))}
               </div>
+            )}
+
+            {/* Caracteristici tehnice — reactive (updates when variant changes) */}
+            {defaultVariantSpecs.length > 0 && (
+              <ProductVariantSpecs initialSpecs={defaultVariantSpecs} />
             )}
           </div>
         </section>
