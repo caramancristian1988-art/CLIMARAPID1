@@ -12,8 +12,23 @@ import { deleteProductAction } from "@/lib/adminProductActions";
 const PER_PAGE = 10;
 
 const OBJECT_ID_RE = /^[0-9a-fA-F]{24}$/;
+const SHORT_CODE_RE = /^[0-9a-fA-F]{1,23}$/;
 
 async function getData(catFilter: string, sort: string, page: number, search: string) {
+  // When search looks like a short product code (1-23 hex chars), find IDs that end with it
+  let shortCodeIds: string[] = [];
+  if (search && SHORT_CODE_RE.test(search) && !OBJECT_ID_RE.test(search)) {
+    try {
+      const raw = await prisma.product.findRaw({
+        filter: { _id: { $regex: `${search.toLowerCase()}$` } },
+        options: { projection: { _id: 1 } },
+      }) as unknown as Array<{ _id: { $oid: string } }>;
+      shortCodeIds = raw.map((r) => r._id.$oid).filter(Boolean);
+    } catch {
+      shortCodeIds = [];
+    }
+  }
+
   const where: Prisma.ProductWhereInput = {
     ...(catFilter ? { categoryId: catFilter } : {}),
     ...(search
@@ -23,6 +38,7 @@ async function getData(catFilter: string, sort: string, page: number, search: st
             { slug: { contains: search, mode: "insensitive" } },
             { brand: { contains: search, mode: "insensitive" } },
             ...(OBJECT_ID_RE.test(search) ? [{ id: search }] : []),
+            ...(shortCodeIds.length > 0 ? [{ id: { in: shortCodeIds } }] : []),
           ],
         }
       : {}),
