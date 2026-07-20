@@ -37,6 +37,15 @@ model Product {
   popupEnabled Boolean @default(false)
   installmentsEnabled Boolean @default(true)
   specifications ProductSpec[]
+  model       String?
+  surface     Int?
+  wifi        Boolean?
+  features    String?
+  refrigerant String?
+  seer        Float?
+  scop        Float?
+  color       String?
+  productType String?
   categoryId  String   @db.ObjectId
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())

@@ -43,6 +43,16 @@ function readProductFields(formData: FormData) {
   const installmentsEnabled = formData.get("installmentsEnabled") === "on";
   const categoryId = String(formData.get("categoryId") ?? "").trim();
   const specifications = parseSpecifications(formData);
+  const model = String(formData.get("model") ?? "").trim() || null;
+  const surfaceRaw = String(formData.get("surface") ?? "").trim();
+  const features = String(formData.get("features") ?? "").trim() || null;
+  const refrigerant = String(formData.get("refrigerant") ?? "").trim() || null;
+  const seerRaw = String(formData.get("seer") ?? "").trim();
+  const scopRaw = String(formData.get("scop") ?? "").trim();
+  const color = String(formData.get("color") ?? "").trim() || null;
+  const productType = String(formData.get("productType") ?? "").trim() || null;
+  const wifiRaw = formData.get("wifi");
+  const wifi = wifiRaw === null ? null : wifiRaw === "on" || wifiRaw === "true";
 
   return {
     name,
@@ -61,6 +71,15 @@ function readProductFields(formData: FormData) {
     installmentsEnabled,
     categoryId,
     specifications,
+    model,
+    surface: surfaceRaw ? Number(surfaceRaw) : null,
+    features,
+    refrigerant,
+    seer: seerRaw ? Number(seerRaw) : null,
+    scop: scopRaw ? Number(scopRaw) : null,
+    color,
+    productType,
+    wifi,
   };
 }
 

@@ -33,7 +33,7 @@ async function getSearchableData() {
         ...fallbackPopularProducts,
         ...fallbackOfferProducts,
         ...fallbackDiscountProducts,
-      ].map((p) => ({ ...p, images: [] as string[], brand: null as string | null, specifications: [] as { label: string; value: string }[], popupEnabled: false, installmentsEnabled: true })),
+      ].map((p) => ({ ...p, images: [] as string[], brand: null as string | null, specifications: [] as { label: string; value: string }[], popupEnabled: false, installmentsEnabled: true, model: null as string | null, surface: null as number | null, wifi: null as boolean | null, features: null as string | null, refrigerant: null as string | null, seer: null as number | null, scop: null as number | null, color: null as string | null, productType: null as string | null })),
     };
   }
 }

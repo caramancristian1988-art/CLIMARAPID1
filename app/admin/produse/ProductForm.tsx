@@ -32,6 +32,15 @@ interface ProductDefaults {
   installmentsEnabled?: boolean;
   categoryId?: string;
   specifications?: { label: string; value: string }[];
+  model?: string | null;
+  surface?: number | null;
+  wifi?: boolean | null;
+  features?: string | null;
+  refrigerant?: string | null;
+  seer?: number | null;
+  scop?: number | null;
+  color?: string | null;
+  productType?: string | null;
 }
 
 const initialState: ProductFormState = {};
@@ -147,6 +156,40 @@ export default function ProductForm({
       </div>
 
       <SpecificationsEditor defaultValue={defaults?.specifications} />
+
+      {/* ── Câmpuri catalog Gree ── */}
+      <div className="border-t border-gray-100 pt-4">
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Date tehnice catalog</p>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <AdminInput label="Cod model (opțional)" name="model" defaultValue={defaults?.model ?? ""} placeholder="GWH09AAAXB-K6DNA4B" />
+          <AdminInput label="Suprafață (m², opțional)" name="surface" type="number" defaultValue={defaults?.surface ?? ""} placeholder="25" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <AdminInput label="Agent frigorific (opțional)" name="refrigerant" defaultValue={defaults?.refrigerant ?? ""} placeholder="R32" />
+          <AdminInput label="Culoare (opțional)" name="color" defaultValue={defaults?.color ?? ""} placeholder="Alb / Gri / Negru" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <AdminInput label="SEER (opțional)" name="seer" type="number" defaultValue={defaults?.seer ?? ""} placeholder="6.3" />
+          <AdminInput label="SCOP (opțional)" name="scop" type="number" defaultValue={defaults?.scop ?? ""} placeholder="4.0" />
+        </div>
+
+        <AdminInput label="Tip echipament (opțional)" name="productType" defaultValue={defaults?.productType ?? ""} placeholder="Sistem split de perete" />
+
+        <AdminTextarea label="Funcții / dotări (opțional)" name="features" defaultValue={defaults?.features ?? ""} placeholder="Ionizare; Wi-Fi; Auto-curățare..." rows={3} />
+
+        <label className="flex items-center gap-2 text-sm font-bold text-gray-600 mt-2">
+          <input
+            type="checkbox"
+            name="wifi"
+            defaultChecked={defaults?.wifi ?? false}
+            className="w-4 h-4 accent-[#c7092b]"
+          />
+          WiFi integrat
+        </label>
+      </div>
 
       <ManagedSelect
         name="badge"
