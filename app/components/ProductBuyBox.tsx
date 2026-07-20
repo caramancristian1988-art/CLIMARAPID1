@@ -81,7 +81,7 @@ export default function ProductBuyBox({
           <p className="text-xs font-extrabold uppercase tracking-wide text-[#1d2353] mb-3">
             Selectează capacitatea
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {variants.map((v, i) => {
               const isSelected = selectedIdx === i;
               const vDiscount =
@@ -93,25 +93,25 @@ export default function ProductBuyBox({
                 <button
                   key={v.id}
                   onClick={() => setSelectedIdx(i)}
-                  className={`relative flex flex-col items-center min-w-[76px] px-3.5 py-2.5 rounded-xl border-2 transition-all duration-150 ${
+                  className={`relative flex flex-col items-start px-2.5 py-1.5 rounded-lg border transition-all duration-150 ${
                     isSelected
                       ? "border-[#c7092b] bg-[#fdf2f3]"
                       : "border-gray-200 bg-white hover:border-gray-300"
                   }`}
                 >
                   {pillBadge && (
-                    <span className="absolute -top-2 -right-2 bg-[#c7092b] text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-md leading-tight">
+                    <span className="absolute -top-1.5 -right-1.5 bg-[#c7092b] text-white text-[9px] font-extrabold px-1 py-0.5 rounded leading-tight">
                       {pillBadge}
                     </span>
                   )}
                   <span
-                    className={`text-sm font-extrabold leading-tight ${
+                    className={`text-xs font-extrabold leading-tight whitespace-nowrap ${
                       isSelected ? "text-[#c7092b]" : "text-[#1d2353]"
                     }`}
                   >
                     {v.label}
                   </span>
-                  <span className="text-[11px] text-gray-500 font-medium mt-0.5 whitespace-nowrap">
+                  <span className="text-[10px] text-gray-400 font-medium whitespace-nowrap">
                     {v.price.toLocaleString("ro-MD")} MDL
                   </span>
                 </button>
@@ -203,10 +203,10 @@ export default function ProductBuyBox({
           productId={productId}
           productName={cartName}
           productImage={displayImage}
-          className="group w-full flex items-center justify-center gap-1.5 text-gray-400 hover:text-[#c7092b] text-sm transition-colors active:scale-95"
+          className="w-full h-11 flex items-center justify-center gap-2 border border-gray-300 hover:border-[#c7092b] hover:text-[#c7092b] text-gray-600 text-sm font-bold rounded-xl transition-colors active:scale-95"
         >
           <svg
-            className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
+            className="w-4 h-4 shrink-0"
             fill="none"
             stroke="currentColor"
             strokeWidth={2}
@@ -218,10 +218,7 @@ export default function ProductBuyBox({
               d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span className="relative">
-            Cere consultație
-            <span className="absolute left-0 -bottom-0.5 w-0 h-px bg-[#c7092b] transition-all duration-300 group-hover:w-full" />
-          </span>
+          Cere consultație
         </ProductOfferModal>
       </div>
     </div>
