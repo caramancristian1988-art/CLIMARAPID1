@@ -66,10 +66,16 @@ export default function ProductBuyBox({
   const activeSpecs =
     selected && selected.specifications.length > 0 ? selected.specifications : baseSpecs;
 
-  // Broadcast active specs to ProductVariantSpecs (below the fold)
+  // Broadcast active specs + variant info to sections below the fold
   useEffect(() => {
     window.dispatchEvent(
-      new CustomEvent("product-variant-specs", { detail: { specs: activeSpecs } })
+      new CustomEvent("product-variant-change", {
+        detail: {
+          specs: activeSpecs,
+          btu: selected?.btu ?? null,
+          availability,
+        },
+      })
     );
   }, [selectedIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 

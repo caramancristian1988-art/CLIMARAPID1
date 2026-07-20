@@ -15,8 +15,8 @@ export default function ProductVariantSpecs({ initialSpecs }: { initialSpecs: Sp
       const detail = (e as CustomEvent<{ specs: Spec[] }>).detail;
       if (detail?.specs) setSpecs(detail.specs);
     };
-    window.addEventListener("product-variant-specs", handler);
-    return () => window.removeEventListener("product-variant-specs", handler);
+    window.addEventListener("product-variant-change", handler);
+    return () => window.removeEventListener("product-variant-change", handler);
   }, []);
 
   if (specs.length === 0) return null;
