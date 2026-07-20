@@ -79,6 +79,24 @@ export default function ProductCard({
 
   const [selectedVariantIdx, setSelectedVariantIdx] = useState<number | null>(defaultVariantIdx);
 
+  // On cards: show only m²-based variants, deduplicated by surface number.
+  // This removes BTU-exterior variants and duplicate surfaces (e.g. same m² in different colors/types).
+  const cardVariants: { originalIdx: number; label: string; id: string }[] = (() => {
+    if (!hasVariants) return [];
+    const seenM2 = new Set<string>();
+    return variants!
+      .map((v, originalIdx) => ({ v, originalIdx }))
+      .filter(({ v }) => {
+        if (!v.label.includes("m²")) return false;
+        const m = v.label.match(/^(\d+)/);
+        const key = m ? m[1] : v.label;
+        if (seenM2.has(key)) return false;
+        seenM2.add(key);
+        return true;
+      })
+      .map(({ v, originalIdx }) => ({ originalIdx, label: v.label, id: v.id }));
+  })();
+
   const selectedVariant = selectedVariantIdx !== null && hasVariants ? variants![selectedVariantIdx] : null;
   const displayPrice = selectedVariant?.price ?? price;
   const displayOldPrice = selectedVariant?.oldPrice ?? oldPrice;
@@ -145,20 +163,20 @@ export default function ProductCard({
           <p className="text-xs text-gray-500 mb-3">{specs}</p>
         )}
 
-        {/* Variant pills — compact m² selector */}
-        {hasVariants && (
+        {/* Variant pills — only m² variants, deduplicated */}
+        {cardVariants.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3 overflow-hidden max-h-[56px]">
-            {variants!.map((v, i) => (
+            {cardVariants.map(({ originalIdx, label, id }) => (
               <button
-                key={v.id}
-                onClick={(e) => { e.preventDefault(); setSelectedVariantIdx(i); }}
+                key={id}
+                onClick={(e) => { e.preventDefault(); setSelectedVariantIdx(originalIdx); }}
                 className={`text-[11px] font-bold px-2 py-1 rounded-full border transition-all ${
-                  selectedVariantIdx === i
+                  selectedVariantIdx === originalIdx
                     ? "bg-[#1d2353] text-white border-[#1d2353]"
                     : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
                 }`}
               >
-                {v.label}
+                {label}
               </button>
             ))}
           </div>
