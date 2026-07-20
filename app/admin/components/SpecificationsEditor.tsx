@@ -21,9 +21,19 @@ const DEFAULT_SPEC_TEMPLATE: Spec[] = [
   { label: "Greutate unitate exterioară", value: "" },
 ];
 
-export default function SpecificationsEditor({ defaultValue }: { defaultValue?: Spec[] }) {
+export default function SpecificationsEditor({
+  defaultValue,
+  useTemplate = true,
+}: {
+  defaultValue?: Spec[];
+  useTemplate?: boolean;
+}) {
   const [rows, setRows] = useState<Spec[]>(
-    defaultValue && defaultValue.length > 0 ? defaultValue : DEFAULT_SPEC_TEMPLATE
+    defaultValue && defaultValue.length > 0
+      ? defaultValue
+      : useTemplate
+      ? DEFAULT_SPEC_TEMPLATE
+      : []
   );
 
   function updateRow(i: number, field: "label" | "value", val: string) {

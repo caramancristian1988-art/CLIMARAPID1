@@ -131,7 +131,7 @@ export default function VariantForm({
         <p className="text-xs text-gray-400 mb-3">
           Dacă completezi, înlocuiesc specificațiile produsului de bază când e selectată această variantă.
         </p>
-        <SpecificationsEditor defaultValue={defaults?.specifications} />
+        <SpecificationsEditor defaultValue={defaults?.specifications} useTemplate={false} />
       </div>
 
       <button
