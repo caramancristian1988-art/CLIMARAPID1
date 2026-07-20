@@ -61,6 +61,15 @@ interface CategoryRow {
   createdAt: Date;
 }
 
+interface VariantPill {
+  id: string;
+  label: string;
+  price: number;
+  oldPrice: number | null;
+  badge: string | null;
+  isDefault: boolean;
+}
+
 interface ProductRow {
   id: string;
   name: string;
@@ -80,13 +89,22 @@ interface ProductRow {
   installmentsEnabled?: boolean;
   categoryId: string;
   createdAt: Date;
+  variants: VariantPill[];
 }
 
 async function getData(): Promise<{ categories: CategoryRow[]; products: ProductRow[] }> {
   try {
     const [categories, products] = await Promise.all([
       prisma.category.findMany({ orderBy: { createdAt: "asc" } }),
-      prisma.product.findMany({ orderBy: { createdAt: "desc" } }),
+      prisma.product.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          variants: {
+            select: { id: true, label: true, price: true, oldPrice: true, badge: true, isDefault: true },
+            orderBy: { order: "asc" },
+          },
+        },
+      }),
     ]);
     if (categories.length === 0 || products.length === 0) throw new Error("empty");
     return { categories, products };
@@ -98,7 +116,7 @@ async function getData(): Promise<{ categories: CategoryRow[]; products: Product
         ...fallbackPopularProducts,
         ...fallbackOfferProducts,
         ...fallbackDiscountProducts,
-      ].map((p) => ({ ...p, images: [] as string[], brand: null as string | null })),
+      ].map((p) => ({ ...p, images: [] as string[], brand: null as string | null, variants: [] as VariantPill[] })),
     };
   }
 }
@@ -220,6 +238,7 @@ export default async function ProdusePage({
                       showDiscount={filters.offersOnly}
                       installmentsEnabled={ratesEnabled && product.installmentsEnabled !== false}
                       installmentMonths={installmentMonths}
+                      variants={product.variants}
                     />
                   ))}
                 </div>
