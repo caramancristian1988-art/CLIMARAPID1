@@ -49,7 +49,7 @@ const allFallbackProducts = [
   ...p,
   images: [] as string[],
   brand: null as string | null,
-  variants: [] as { id: string; label: string; price: number; oldPrice: number | null; badge: string | null; isDefault: boolean }[],
+  variants: [] as { id: string; label: string; price: number; oldPrice: number | null; badge: string | null; isDefault: boolean; btu: number | null }[],
 }));
 
 const getCategoryData = cache(async (slug: string) => {
@@ -61,7 +61,7 @@ const getCategoryData = cache(async (slug: string) => {
       orderBy: { createdAt: "desc" },
       include: {
         variants: {
-          select: { id: true, label: true, price: true, oldPrice: true, badge: true, isDefault: true },
+          select: { id: true, label: true, price: true, oldPrice: true, badge: true, isDefault: true, btu: true },
           orderBy: { order: "asc" },
         },
       },
@@ -283,7 +283,7 @@ interface CategoryViewProps {
     badge: string | null;
     installmentsEnabled?: boolean;
     createdAt: Date;
-    variants: Array<{ id: string; label: string; price: number; oldPrice: number | null; badge: string | null; isDefault: boolean }>;
+    variants: Array<{ id: string; label: string; price: number; oldPrice: number | null; badge: string | null; isDefault: boolean; btu: number | null }>;
   }>;
   sort: ReturnType<typeof parseSort>;
   page: number;

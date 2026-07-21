@@ -68,6 +68,7 @@ interface VariantPill {
   oldPrice: number | null;
   badge: string | null;
   isDefault: boolean;
+  btu: number | null;
 }
 
 interface ProductRow {
@@ -100,7 +101,7 @@ async function getData(): Promise<{ categories: CategoryRow[]; products: Product
         orderBy: { createdAt: "desc" },
         include: {
           variants: {
-            select: { id: true, label: true, price: true, oldPrice: true, badge: true, isDefault: true },
+            select: { id: true, label: true, price: true, oldPrice: true, badge: true, isDefault: true, btu: true },
             orderBy: { order: "asc" },
           },
         },

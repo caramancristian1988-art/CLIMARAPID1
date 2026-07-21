@@ -14,6 +14,7 @@ interface VariantPill {
   oldPrice: number | null;
   badge: string | null;
   isDefault: boolean;
+  btu: number | null;
 }
 
 interface ProductCardProps {
@@ -106,8 +107,9 @@ export default function ProductCard({
   const discountAmount = displayOldPrice ? Math.round(displayOldPrice - displayPrice) : null;
   const displayBadge = badge ?? (discount ? `-${discount}%` : null);
 
+  const activeBtu = selectedVariant?.btu ?? btu;
   const specs = [
-    btu ? `${(btu / 1000).toFixed(0)}000 BTU` : null,
+    activeBtu ? `${(activeBtu / 1000).toFixed(0)}000 BTU` : null,
     technology || null,
     energyClass ? `${t("class")} ${energyClass}` : null,
   ]
