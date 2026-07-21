@@ -184,9 +184,12 @@ export async function generateMetadata({
       keywords,
       alternates: { canonical: `${BASE_URL}/produse/${slug}` },
       openGraph: {
+        type: "article",
         title: `${name} | Climat Rapid`,
         description,
         url: `${BASE_URL}/produse/${slug}`,
+        publishedTime: p.createdAt.toISOString(),
+        modifiedTime: p.createdAt.toISOString(),
         ...(image ? { images: [{ url: image, width: 800, height: 600, alt: name }] } : {}),
       },
       twitter: {

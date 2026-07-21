@@ -12,6 +12,7 @@ export default function AccountStats() {
     <div className="grid grid-cols-2 gap-4 mb-6">
       <Link
         href="/favorite"
+        aria-label="Produse favorite"
         className="border border-gray-100 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all"
       >
         <span className="w-11 h-11 rounded-full bg-[#fdf2f3] text-[#c7092b] flex items-center justify-center shrink-0">

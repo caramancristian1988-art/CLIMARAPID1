@@ -20,11 +20,11 @@ const BASE = "https://www.climatrapid.md";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE),
   title: {
-    default: "Climat Rapid — Condiționere & Climatizare Moldova",
+    default: "Climat Rapid — Condiționere & Climatizare în Moldova",
     template: "%s | Climat Rapid",
   },
   description:
-    "Magazin online de condiționere și sisteme de climatizare în Moldova. Vânzare, livrare și instalare profesională — Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
+    "Magazin online de condiționere în Moldova — vânzare, livrare și instalare. Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
   keywords: [
     "conditioner Moldova", "aer conditionat Moldova", "climatizare Chisinau",
     "conditioner Chisinau", "instalare aer conditionat Moldova",
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: BASE },
   openGraph: {
-    title: "Climat Rapid — Condiționere & Climatizare Moldova",
-    description: "Vânzare, livrare și instalare condiționere în Moldova. Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
+    title: "Climat Rapid — Condiționere & Climatizare în Moldova",
+    description: "Magazin online de condiționere în Moldova — vânzare, livrare și instalare. Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
     locale: "ro_MD",
     type: "website",
     url: BASE,
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@climatrapid",
-    title: "Climat Rapid — Condiționere & Climatizare Moldova",
-    description: "Magazin online de condiționere și sisteme de climatizare. Livrare și instalare în Moldova.",
+    title: "Climat Rapid — Condiționere & Climatizare în Moldova",
+    description: "Magazin online de condiționere în Moldova — vânzare, livrare și instalare. Daikin, Mitsubishi, Gree, Midea la cele mai bune prețuri.",
     images: [`${BASE}/og-image.png`],
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
