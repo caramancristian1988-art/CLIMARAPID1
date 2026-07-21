@@ -529,7 +529,7 @@ async function ProductView({ product, category, related, reviews, faqs, variants
 
   const specs = [
     product.brand ? { label: "Brand", value: product.brand } : null,
-    product.btu ? { label: "Capacitate", value: `${(product.btu / 1000).toFixed(0)}000 BTU` } : null,
+    product.btu ? { label: "Capacitate", value: `${product.btu.toLocaleString("ro-MD")} BTU` } : null,
     { label: "Tehnologie", value: product.technology },
     product.energyClass ? { label: "Clasă energetică", value: product.energyClass } : null,
     category ? { label: "Categorie", value: category.name } : null,
