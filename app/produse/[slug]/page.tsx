@@ -444,6 +444,13 @@ function CategoryView({ category, products: baseProducts, sort, page, filters, r
 
 /* ───────────────────────── PRODUCT VIEW ───────────────────────── */
 
+const DEFAULT_FAQS = [
+  { question: "Ce garanție oferă Climat Rapid?", answer: "Toate aparatele de aer condiționat vândute de Climat Rapid beneficiază de garanție de 2 ani. Instalarea profesională este realizată de echipa noastră cu experiență în domeniu." },
+  { question: "Livrați condiționere în toată Moldova?", answer: "Da, livrăm în toată Moldova, inclusiv în Chișinău și localitățile din jur. Termenul de livrare este de obicei 1-2 zile lucrătoare de la confirmarea comenzii." },
+  { question: "Prețul include instalarea conditionerului?", answer: "Prețul afișat este pentru aparatul de aer condiționat. Instalarea se comandă separat — contactați-ne pentru un deviz gratuit și o programare convenabilă." },
+  { question: "Cum aleg capacitatea potrivită a conditionerului?", answer: "Regula generală: 1 kW (≈3.400 BTU) pentru fiecare 10 m² de spațiu. Exemplu: pentru o cameră de 25 m² aveți nevoie de un aparat de 2,5 kW / 9.000 BTU. Contactați-ne pentru recomandări personalizate." },
+];
+
 interface ProductViewProps {
   product: {
     id: string;
@@ -604,22 +611,24 @@ async function ProductView({ product, category, related, reviews, faqs, variants
     } : {}),
   };
 
+  const allFaqs = [
+    ...faqs.map((f) => ({ question: f.question, answer: f.answer })),
+    ...DEFAULT_FAQS,
+  ];
+
   const schemas: Record<string, unknown>[] = [
     productSchema,
     { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": breadcrumbItems },
-  ];
-
-  if (faqs.length > 0) {
-    schemas.push({
+    {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": faqs.map((f) => ({
+      "mainEntity": allFaqs.map((f) => ({
         "@type": "Question",
         "name": f.question,
         "acceptedAnswer": { "@type": "Answer", "text": f.answer },
       })),
-    });
-  }
+    },
+  ];
 
   return (
     <main className="bg-white">
@@ -784,15 +793,13 @@ async function ProductView({ product, category, related, reviews, faqs, variants
         </div>
       </section>
 
-      {/* Product FAQ — optional, only shown if an admin added questions */}
-      {faqs.length > 0 && (
-        <section className="bg-white py-12">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-12">
-            <h2 className="text-2xl font-extrabold text-[#1d2353] mb-8">Întrebări frecvente</h2>
-            <FaqAccordion faqs={faqs.map((f) => ({ question: f.question, answer: f.answer }))} />
-          </div>
-        </section>
-      )}
+      {/* Product FAQ — default questions always shown; admin can add product-specific ones */}
+      <section className="bg-white py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-12">
+          <h2 className="text-2xl font-extrabold text-[#1d2353] mb-8">Întrebări frecvente</h2>
+          <FaqAccordion faqs={allFaqs} />
+        </div>
+      </section>
 
       {/* Related products */}
       {related.length > 0 && (

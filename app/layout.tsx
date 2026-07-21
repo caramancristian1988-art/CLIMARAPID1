@@ -72,7 +72,7 @@ export default async function RootLayout({
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "LocalBusiness",
+        "@type": ["LocalBusiness", "Organization"],
         "@id": `${BASE}/#business`,
         "name": "Climat Rapid",
         "url": BASE,
